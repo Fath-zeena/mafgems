@@ -53,26 +53,6 @@ export function GemGallery() {
     setSelectedGem(null);
   };
 
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Gems & Diamonds</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4">
-            {Array.from({ length: 8 }).map((_, index) => (
-              <div key={index} className="flex flex-col items-center p-2">
-                <Skeleton className="w-[80px] h-[80px] rounded-md" />
-                <Skeleton className="h-4 w-16 mt-2" />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <Card>
       <CardHeader>
@@ -80,23 +60,32 @@ export function GemGallery() {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
-          {gems.map((gem) => (
-            <div
-              key={gem.id}
-              className={cn(
-                "flex flex-col items-center p-2 border rounded-md cursor-pointer transition-shadow",
-                selectedGem?.id === gem.id && "ring-2 ring-primary shadow-lg"
-              )}
-              draggable
-              onClick={() => handleSelectGem(gem)}
-              onDragStart={(e) => handleDragStart(e, gem)}
-            >
-              <DynamicGemPreview gem={gem} />
-              <p className="mt-2 text-sm font-medium text-center">{gem.name}</p>
-            </div>
-          ))}
+          {loading
+            ? Array.from({ length: 8 }).map((_, index) => (
+                <div key={index} className="flex flex-col items-center p-2">
+                  <Skeleton className="w-[80px] h-[80px] rounded-md" />
+                  <Skeleton className="h-4 w-16 mt-2" />
+                </div>
+              ))
+            : gems.map((gem) => (
+                <div
+                  key={gem.id}
+                  className={cn(
+                    "flex flex-col items-center p-2 border rounded-md cursor-pointer transition-shadow",
+                    selectedGem?.id === gem.id && "ring-2 ring-primary shadow-lg"
+                  )}
+                  draggable
+                  onClick={() => handleSelectGem(gem)}
+                  onDragStart={(e) => handleDragStart(e, gem)}
+                >
+                  <DynamicGemPreview gem={gem} />
+                  <p className="mt-2 text-sm font-medium text-center">
+                    {gem.name}
+                  </p>
+                </div>
+              ))}
         </div>
-        {selectedGem && (
+        {selectedGem && !loading && (
           <Button
             variant="outline"
             className="w-full mt-4"
