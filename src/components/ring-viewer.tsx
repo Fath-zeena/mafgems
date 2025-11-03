@@ -50,11 +50,11 @@ function Ring() {
 
   const crownBaseY = 1.1;
   const crownBaseHeight = 0.08;
-  const prongsHeight = 0.3; // Height of the wall that replaces the prongs
+  const wallHeight = 0.1; // Reduced to one-third of the previous prongsHeight (0.3 / 3 = 0.1)
 
   // Position calculations for the setting
-  const prongsBaseY = crownBaseY + crownBaseHeight / 2;
-  const wallCenterY = prongsBaseY + prongsHeight / 2; // Center Y for the new wall
+  const wallBaseY = crownBaseY + crownBaseHeight / 2;
+  const wallCenterY = wallBaseY + wallHeight / 2; // Center Y for the new wall
   const gemGirdleY = wallCenterY - 0.05; // Adjust gem girdle to sit slightly below the wall's center
 
   // Crown Base dimensions (radius * scale)
@@ -82,7 +82,7 @@ function Ring() {
 
       {/* Continuous Wall Setting */}
       <Cylinder 
-        args={[crownBaseRadius, crownBaseRadius, prongsHeight, 64]} // Use crownBaseRadius for the wall's radius
+        args={[crownBaseRadius, crownBaseRadius, wallHeight, 64]} // Use crownBaseRadius for the wall's radius
         position={[0, wallCenterY, 0]} // Position on top of the crown base
         scale={[crownBaseScaleX, 1, crownBaseScaleZ]} // Match the oval shape of the crown base
       >
