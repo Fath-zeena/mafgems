@@ -16,10 +16,10 @@ function OvalCutGem({ color }: { color: string }) {
   };
 
   // Dimensions for the oval cut
-  const girdleRadius = 0.5; // Made gem larger
-  const crownHeight = 0.15;
-  const pavilionHeight = 0.3; // Made gem shorter (less tall)
-  const facets = 64;
+  const girdleRadius = 0.5; 
+  const crownHeight = 0.1; // Reduced height
+  const pavilionHeight = 0.2; // Reduced height for a shorter gem
+  const facets = 24; // Reduced facets for a simpler look
 
   return (
     // Rotate the entire gem 180 degrees on the X-axis to flip it upside down
@@ -34,7 +34,6 @@ function OvalCutGem({ color }: { color: string }) {
       </Cylinder>
 
       {/* Pavilion (Bottom part of the gem, now at the top with a dome shape) */}
-      {/* The second argument is wider to create a flat, dome-like top */}
       <Cylinder
         args={[girdleRadius, girdleRadius * 0.4, pavilionHeight, facets]}
         position={[0, -pavilionHeight / 2, 0]}
@@ -50,10 +49,13 @@ function Ring() {
 
   // Define positions for the setting
   const crownBaseY = 1.1;
-  const prongsCenterY = 1.2;
-  const gemGirdleY = 1.2;
+  const crownBaseTopY = crownBaseY + 0.08 / 2; // Top surface of the base
+  const prongHeight = 0.3;
+  const prongsCenterY = crownBaseTopY + prongHeight / 2; // Position prongs to start from the base top
+  
+  const gemGirdleY = crownBaseTopY + 0.1; // Position gem to sit on the base
 
-  // Adjust prong positions to sit on the edge of the base and hold the larger gem
+  // Adjust prong positions to sit on the edge of the base
   const prongXOffset = 0.4;
   const prongZOffset = 0.6;
   const prongPositions: [number, number, number][] = [
@@ -83,7 +85,7 @@ function Ring() {
 
       {/* Four-Prong Setting */}
       {prongPositions.map((pos, i) => (
-        <Cylinder key={i} args={[0.04, 0.04, 0.3, 16]} position={pos}>
+        <Cylinder key={i} args={[0.04, 0.04, prongHeight, 16]} position={pos}>
            <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
         </Cylinder>
       ))}
