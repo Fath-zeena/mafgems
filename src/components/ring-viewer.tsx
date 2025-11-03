@@ -3,20 +3,57 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
-import { OvalCutGem } from "./oval-cut-gem";
+
+// A custom component to create an oval cut gem shape with a dome top
+function OvalCutGem({ color }: { color: string }) {
+  const materialProps = {
+    color: color,
+    roughness: 0,
+    transmission: 1,
+    thickness: 2,
+    ior: 2.417, // Precise Index of Refraction for diamond
+    reflectivity: 1,
+  };
+
+  // Dimensions for the oval cut
+  const girdleRadius = 0.5; // Made gem larger
+  const crownHeight = 0.15;
+  const pavilionHeight = 0.3; // Made gem shorter (less tall)
+  const facets = 64;
+
+  return (
+    // Rotate the entire gem 180 degrees on the X-axis to flip it upside down
+    // Scale on X and Z axes to create an oval shape
+    <group rotation={[Math.PI, 0, 0]} scale={[0.8, 1, 1.2]}>
+      {/* Crown (Top part of the gem, now at the bottom) */}
+      <Cylinder
+        args={[girdleRadius, girdleRadius, crownHeight, facets]}
+        position={[0, crownHeight / 2, 0]}
+      >
+        <meshPhysicalMaterial {...materialProps} />
+      </Cylinder>
+
+      {/* Pavilion (Bottom part of the gem, now at the top with a dome shape) */}
+      {/* The second argument is wider to create a flat, dome-like top */}
+      <Cylinder
+        args={[girdleRadius, girdleRadius * 0.4, pavilionHeight, facets]}
+        position={[0, -pavilionHeight / 2, 0]}
+      >
+        <meshPhysicalMaterial {...materialProps} />
+      </Cylinder>
+    </group>
+  );
+}
 
 function Ring() {
   const { selectedGem } = useCustomizer();
 
   // Define positions for the setting
   const crownBaseY = 1.1;
-  const crownBaseTopY = crownBaseY + 0.08 / 2; // Top surface of the base
-  const prongHeight = 0.3;
-  const prongsCenterY = crownBaseTopY + prongHeight / 2; // Position prongs to start from the base top
-  
-  const gemGirdleY = crownBaseTopY + 0.1; // Position gem to sit on the base
+  const prongsCenterY = 1.2;
+  const gemGirdleY = 1.2;
 
-  // Adjust prong positions to sit on the edge of the base
+  // Adjust prong positions to sit on the edge of the base and hold the larger gem
   const prongXOffset = 0.4;
   const prongZOffset = 0.6;
   const prongPositions: [number, number, number][] = [
@@ -46,7 +83,7 @@ function Ring() {
 
       {/* Four-Prong Setting */}
       {prongPositions.map((pos, i) => (
-        <Cylinder key={i} args={[0.04, 0.04, prongHeight, 16]} position={pos}>
+        <Cylinder key={i} args={[0.04, 0.04, 0.3, 16]} position={pos}>
            <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
         </Cylinder>
       ))}
