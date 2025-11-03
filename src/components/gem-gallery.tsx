@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,6 +8,9 @@ import { useCustomizer } from "@/context/customizer-context";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import type { Gem } from "@/types";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import { OvalCutGem } from "./oval-cut-gem";
 
 export function GemGallery() {
   const { selectedGem, setSelectedGem } = useCustomizer();
@@ -83,13 +85,30 @@ export function GemGallery() {
               onClick={() => handleSelectGem(gem)}
               onDragStart={(e) => handleDragStart(e, gem)}
             >
-              <Image
-                src={gem.image_url}
-                alt={gem.name}
-                width={80}
-                height={80}
-                className="rounded-md"
-              />
+              <div className="w-[80px] h-[80px] rounded-md cursor-grab">
+                <Canvas camera={{ position: [0, 0, 2.5], fov: 50 }}>
+                  <ambientLight intensity={Math.PI / 2} />
+                  <spotLight
+                    position={[10, 10, 10]}
+                    angle={0.15}
+                    penumbra={1}
+                    decay={0}
+                    intensity={Math.PI}
+                  />
+                  <pointLight
+                    position={[-10, -10, -10]}
+                    decay={0}
+                    intensity={Math.PI}
+                  />
+                  <OvalCutGem color={gem.color} />
+                  <OrbitControls
+                    enableZoom={false}
+                    enablePan={false}
+                    autoRotate
+                    autoRotateSpeed={4}
+                  />
+                </Canvas>
+              </div>
               <p className="mt-2 text-sm font-medium text-center">{gem.name}</p>
             </div>
           ))}
