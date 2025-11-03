@@ -50,12 +50,14 @@ function Ring() {
 
   const crownBaseY = 1.1;
   const crownBaseHeight = 0.08;
-  const wallHeight = 0.05; // Reduced to half of the previous height (0.1 / 2 = 0.05)
+  const wallHeight = 0.05; // Current wall height
 
   // Position calculations for the setting
   const wallBaseY = crownBaseY + crownBaseHeight / 2;
-  const wallCenterY = wallBaseY + wallHeight / 2; // Center Y for the new wall
-  const gemGirdleY = wallCenterY - 0.05; // Adjust gem girdle to sit slightly below the wall's center
+  const wallCenterY = wallBaseY + wallHeight / 2; // Center Y for the wall
+  
+  // Adjust gemGirdleY to place the gem's girdle at the top of the wall
+  const gemGirdleY = wallCenterY + wallHeight / 2; 
 
   // Crown Base dimensions (radius * scale)
   const crownBaseRadius = 0.6;
