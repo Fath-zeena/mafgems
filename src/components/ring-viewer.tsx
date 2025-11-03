@@ -58,11 +58,9 @@ function Ring() {
   const prongsCenterY = prongsBaseY + prongsHeight / 2;
   const gemGirdleY = prongsCenterY - 0.05; // Adjust gem girdle to sit slightly below prong center
 
-  // Adjust prong positions to sit precisely on the edge of the scaled crown base
-  const crownBaseScaledXRadius = 0.5 * 0.8; // 0.4
-  const crownBaseScaledZRadius = 0.5 * 1.2; // 0.6
-  const prongXOffset = crownBaseScaledXRadius; 
-  const prongZOffset = crownBaseScaledZRadius; 
+  // Prong positions remain stable
+  const prongXOffset = 0.4; 
+  const prongZOffset = 0.6; 
   
   const prongPositions: [number, number, number][] = [
     [prongXOffset, prongsCenterY, prongZOffset],
@@ -84,8 +82,8 @@ function Ring() {
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Torus>
 
-      {/* Crown Base - Scaled to match prong positions */}
-      <Cylinder args={[0.5, 0.5, crownBaseHeight, 64]} position={[0, crownBaseY, 0]} scale={[0.8, 1, 1.2]}>
+      {/* Crown Base - Enlarged to ensure prongs sit on its edge */}
+      <Cylinder args={[0.6, 0.6, crownBaseHeight, 64]} position={[0, crownBaseY, 0]} scale={[0.8, 1, 1.2]}>
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Cylinder>
 
