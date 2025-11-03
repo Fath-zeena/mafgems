@@ -4,8 +4,8 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 
-// A custom component to create a cushion cut gem shape, flipped to sit correctly on the ring
-function CushionCutGem({ color }: { color: string }) {
+// A custom component to create an oval cut gem shape, flipped to sit correctly on the ring
+function OvalCutGem({ color }: { color: string }) {
   const materialProps = {
     color: color,
     roughness: 0,
@@ -15,22 +15,20 @@ function CushionCutGem({ color }: { color: string }) {
     reflectivity: 1,
   };
 
-  // Dimensions for the cushion cut
+  // Dimensions for the oval cut
   const girdleRadius = 0.4;
   const crownHeight = 0.15;
   const pavilionHeight = 0.6;
-  const facets = 4; // Use 4 sides for a square-like, cushion shape
+  const facets = 64; // High number of facets for a smooth curve
 
   return (
     // Rotate the entire gem 180 degrees on the X-axis to flip it upside down
-    // This places the flat "table" onto the ring setting
-    <group rotation={[Math.PI, 0, 0]}>
+    // Scale on X and Z axes to create an oval shape
+    <group rotation={[Math.PI, 0, 0]} scale={[0.8, 1, 1.2]}>
       {/* Crown (Top part of the gem, now at the bottom) */}
-      {/* Using 4 facets to create a square base, rotated to look like a cushion cut */}
       <Cylinder
         args={[girdleRadius, girdleRadius, crownHeight, facets]}
         position={[0, crownHeight / 2, 0]}
-        rotation={[0, Math.PI / 4, 0]} // Rotate to align with the setting
       >
         <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
@@ -39,7 +37,6 @@ function CushionCutGem({ color }: { color: string }) {
       <Cylinder
         args={[girdleRadius, 0, pavilionHeight, facets]}
         position={[0, -pavilionHeight / 2, 0]}
-        rotation={[0, Math.PI / 4, 0]} // Align rotation with the crown
       >
         <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
@@ -55,13 +52,14 @@ function Ring() {
   const prongsCenterY = 1.2;
   const gemGirdleY = 1.2; // The Y position where the gem's girdle sits
 
-  // Adjust prong positions for a square/rounded gem
-  const prongOffset = 0.35; 
+  // Adjust prong positions for an oval gem
+  const prongXOffset = 0.28;
+  const prongZOffset = 0.42;
   const prongPositions: [number, number, number][] = [
-    [prongOffset, prongsCenterY, prongOffset],
-    [-prongOffset, prongsCenterY, prongOffset],
-    [prongOffset, prongsCenterY, -prongOffset],
-    [-prongOffset, prongsCenterY, -prongOffset],
+    [prongXOffset, prongsCenterY, prongZOffset],
+    [-prongXOffset, prongsCenterY, prongZOffset],
+    [prongXOffset, prongsCenterY, -prongZOffset],
+    [-prongXOffset, prongsCenterY, -prongZOffset],
   ];
 
   // The gem group position is set to the girdle height
@@ -78,9 +76,8 @@ function Ring() {
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Torus>
 
-      {/* Crown Base - Adjusted size for square gem */}
-      {/* args: [radiusTop, radiusBottom, height, radialSegments] */}
-      <Cylinder args={[0.5, 0.5, 0.08, 4]} position={[0, crownBaseY, 0]} rotation={[0, Math.PI / 4, 0]}>
+      {/* Crown Base - Adjusted size for oval gem */}
+      <Cylinder args={[0.5, 0.5, 0.08, 64]} position={[0, crownBaseY, 0]} scale={[0.8, 1, 1.2]}>
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Cylinder>
 
@@ -91,10 +88,10 @@ function Ring() {
         </Cylinder>
       ))}
       
-      {/* Gemstone - Cushion cut style */}
+      {/* Gemstone - Oval cut style */}
       {selectedGem && (
         <group position={[0, gemPositionY, 0]}>
-          <CushionCutGem color={selectedGem.color} />
+          <OvalCutGem color={selectedGem.color} />
         </group>
       )}
     </>
