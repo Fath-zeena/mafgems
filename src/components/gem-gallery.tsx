@@ -14,7 +14,7 @@ const DynamicGemPreview = dynamic(
   () => import("./gem-preview").then((mod) => mod.GemPreview),
   {
     ssr: false,
-    loading: () => <Skeleton className="w-[80px] h-[80px] rounded-md" />,
+    // Removed the 'loading' prop here as it's handled by the parent component
   }
 );
 
