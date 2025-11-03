@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 
-// A custom component to create a rounded, multi-faceted cushion cut gem shape
+// A custom component to create a cushion cut gem shape, flipped to sit correctly on the ring
 function CushionCutGem({ color }: { color: string }) {
   const materialProps = {
     color: color,
@@ -15,28 +15,31 @@ function CushionCutGem({ color }: { color: string }) {
     reflectivity: 1,
   };
 
-  // Dimensions for the cushion cut approximation
-  const girdleRadius = 0.4; 
-  const crownHeight = 0.15; 
-  const pavilionHeight = 0.6; 
-  const facets = 16; // Increased facets for a rounded appearance
+  // Dimensions for the cushion cut
+  const girdleRadius = 0.4;
+  const crownHeight = 0.15;
+  const pavilionHeight = 0.6;
+  const facets = 4; // Use 4 sides for a square-like, cushion shape
 
-  // The group origin (0, 0, 0) represents the girdle plane.
   return (
-    <group>
-      {/* Crown (Prism shape) - Using 16 sides for a rounded look */}
-      {/* args: [radiusTop, radiusBottom, height, radialSegments] */}
-      <Cylinder 
-        args={[girdleRadius, girdleRadius, crownHeight, facets]} 
-        position={[0, crownHeight / 2, 0]} // Rests on the girdle plane
+    // Rotate the entire gem 180 degrees on the X-axis to flip it upside down
+    // This places the flat "table" onto the ring setting
+    <group rotation={[Math.PI, 0, 0]}>
+      {/* Crown (Top part of the gem, now at the bottom) */}
+      {/* Using 4 facets to create a square base, rotated to look like a cushion cut */}
+      <Cylinder
+        args={[girdleRadius, girdleRadius, crownHeight, facets]}
+        position={[0, crownHeight / 2, 0]}
+        rotation={[0, Math.PI / 4, 0]} // Rotate to align with the setting
       >
         <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
-      {/* Pavilion (Pyramid shape) - Tapered base with 16 sides */}
-      {/* args: [radiusTop, radiusBottom, height, radialSegments] */}
-      <Cylinder 
-        args={[girdleRadius, 0, pavilionHeight, facets]} 
-        position={[0, -pavilionHeight / 2, 0]} // Hangs below the girdle plane
+
+      {/* Pavilion (Bottom, pointed part of the gem, now at the top) */}
+      <Cylinder
+        args={[girdleRadius, 0, pavilionHeight, facets]}
+        position={[0, -pavilionHeight / 2, 0]}
+        rotation={[0, Math.PI / 4, 0]} // Align rotation with the crown
       >
         <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
