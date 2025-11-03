@@ -1,23 +1,14 @@
 "use client";
 
-import { memo, useEffect } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { memo } from "react";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { OvalCutGem } from "./oval-cut-gem";
 import type { Gem } from "@/types";
 
-// Inner component to handle Three.js scene and cleanup
+// Inner component to handle Three.js scene
 function GemScene({ gem }: { gem: Gem }) {
-  const { gl } = useThree();
-
-  useEffect(() => {
-    // Cleanup function when component unmounts
-    return () => {
-      // Explicitly dispose of the WebGL renderer
-      gl.dispose();
-    };
-  }, [gl]);
-
+  // Removed the useEffect with gl.dispose() to let @react-three/fiber manage context cleanup
   return (
     <>
       <ambientLight intensity={Math.PI / 2} />
@@ -37,7 +28,6 @@ function GemScene({ gem }: { gem: Gem }) {
       <OrbitControls
         enableZoom={false}
         enablePan={false}
-        // autoRotate and autoRotateSpeed removed for stability during unmount
       />
     </>
   );
