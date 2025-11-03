@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -8,7 +9,14 @@ import { useCustomizer } from "@/context/customizer-context";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import type { Gem } from "@/types";
-import { GemPreview } from "./gem-preview";
+
+const DynamicGemPreview = dynamic(
+  () => import("./gem-preview").then((mod) => mod.GemPreview),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="w-[80px] h-[80px] rounded-md" />,
+  }
+);
 
 export function GemGallery() {
   const { selectedGem, setSelectedGem } = useCustomizer();
@@ -83,7 +91,7 @@ export function GemGallery() {
               onClick={() => handleSelectGem(gem)}
               onDragStart={(e) => handleDragStart(e, gem)}
             >
-              <GemPreview gem={gem} />
+              <DynamicGemPreview gem={gem} />
               <p className="mt-2 text-sm font-medium text-center">{gem.name}</p>
             </div>
           ))}
