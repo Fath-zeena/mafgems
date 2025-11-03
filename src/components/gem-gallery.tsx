@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useCustomizer } from "@/context/customizer-context";
@@ -25,6 +24,15 @@ export function GemGallery() {
   // Use hardcoded gems directly
   const gems = initialGems;
 
+  const handleSelectGem = (gem: Gem) => {
+    setSelectedGem({
+      id: gem.id,
+      name: gem.name,
+      imageUrl: gem.image_url,
+      color: gem.color,
+    });
+  };
+
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, gem: Gem) => {
     // Store the gem data as a JSON string in the dataTransfer object
     e.dataTransfer.setData("application/json", JSON.stringify({
@@ -33,6 +41,8 @@ export function GemGallery() {
       imageUrl: gem.image_url,
       color: gem.color,
     }));
+    // Immediately update the gem on the ring when dragging starts
+    handleSelectGem(gem);
   };
 
   const handleRemoveGem = () => {
@@ -50,10 +60,11 @@ export function GemGallery() {
             <div 
               key={gem.id} 
               className={cn(
-                "flex flex-col items-center p-2 border rounded-md cursor-grab transition-shadow",
+                "flex flex-col items-center p-2 border rounded-md cursor-pointer transition-shadow",
                 selectedGem?.id === gem.id && "ring-2 ring-primary shadow-lg"
               )}
               draggable
+              onClick={() => handleSelectGem(gem)}
               onDragStart={(e) => handleDragStart(e, gem)}
             >
               <Image src={gem.image_url} alt={gem.name} width={80} height={80} className="rounded-md" />
