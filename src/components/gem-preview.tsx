@@ -8,27 +8,15 @@ import type { Gem } from "@/types";
 
 // Inner component to handle Three.js scene and cleanup
 function GemScene({ gem }: { gem: Gem }) {
-  const { gl, scene } = useThree();
+  const { gl } = useThree();
 
   useEffect(() => {
     // Cleanup function when component unmounts
     return () => {
-      // Dispose of scene objects if necessary (though R3F usually handles this)
-      // For example, if you had custom geometries/materials not managed by R3F
-      scene.traverse((object: any) => {
-        if (object.isMesh) {
-          object.geometry?.dispose();
-          if (Array.isArray(object.material)) {
-            object.material.forEach((material: any) => material.dispose());
-          } else {
-            object.material?.dispose();
-          }
-        }
-      });
       // Explicitly dispose of the WebGL renderer
       gl.dispose();
     };
-  }, [gl, scene]);
+  }, [gl]);
 
   return (
     <>
@@ -49,8 +37,7 @@ function GemScene({ gem }: { gem: Gem }) {
       <OrbitControls
         enableZoom={false}
         enablePan={false}
-        autoRotate
-        autoRotateSpeed={4}
+        // autoRotate and autoRotateSpeed removed for stability during unmount
       />
     </>
   );
