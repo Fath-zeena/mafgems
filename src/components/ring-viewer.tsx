@@ -66,6 +66,17 @@ function Ring() {
 
   const gemPositionY = gemGirdleY;
 
+  // Calculate the position for the ring band to touch the crown base
+  const ringBandThickness = 0.06 * 2; // 2 * tubeRadius
+  const crownBaseBottomY = crownBaseY - crownBaseHeight / 2;
+  const ringBandCenterY = crownBaseBottomY - ringBandThickness / 2;
+
+  // Position for the curvy top edge of the wall
+  const wallTopEdgeHeight = 0.01;
+  const wallTopEdgeRadiusOffset = 0.01; // Slightly wider than the wall
+  const wallTopEdgeCenterY = wallCenterY + wallHeight / 2 + wallTopEdgeHeight / 2;
+
+
   return (
     <>
       {/* Ring Band */}
@@ -73,6 +84,7 @@ function Ring() {
         args={[1, 0.06, 32, 100]} 
         rotation={[Math.PI / 2, Math.PI / 2, 0]}
         scale={[1, 1, 1.5]}
+        position={[0, ringBandCenterY, 0]} // Adjusted vertical position
       >
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Torus>
@@ -87,6 +99,15 @@ function Ring() {
         args={[crownBaseRadius, crownBaseRadius, wallHeight, 64]} // Use crownBaseRadius for the wall's radius
         position={[0, wallCenterY, 0]} // Position on top of the crown base
         scale={[crownBaseScaleX, 1, crownBaseScaleZ]} // Match the oval shape of the crown base
+      >
+        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+      </Cylinder>
+
+      {/* Curvy Top Edge for the Wall */}
+      <Cylinder
+        args={[crownBaseRadius + wallTopEdgeRadiusOffset, crownBaseRadius + wallTopEdgeRadiusOffset, wallTopEdgeHeight, 64]}
+        position={[0, wallTopEdgeCenterY, 0]}
+        scale={[crownBaseScaleX, 1, crownBaseScaleZ]}
       >
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Cylinder>
