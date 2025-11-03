@@ -130,7 +130,8 @@ export function RingViewer() {
     >
       <Canvas camera={{ position: [3, 2, 3], fov: 45 }}>
         <ambientLight intensity={Math.PI} />
-        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
+        {/* Adjusted spotLight to shine from directly above */}
+        <spotLight position={[0, 10, 0]} angle={0.3} penumbra={0.5} decay={0} intensity={Math.PI * 2} />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         
         <Ring />
