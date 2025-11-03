@@ -16,7 +16,7 @@ function OvalCutGem({ color }: { color: string }) {
   };
 
   // Dimensions for the oval cut
-  const girdleRadius = 0.4;
+  const girdleRadius = 0.48; // Increased size to fit the prongs
   const crownHeight = 0.15;
   const pavilionHeight = 0.6;
   const facets = 64; // High number of facets for a smooth curve
@@ -34,8 +34,9 @@ function OvalCutGem({ color }: { color: string }) {
       </Cylinder>
 
       {/* Pavilion (Bottom, pointed part of the gem, now at the top) */}
+      {/* The second argument (radiusBottom) is non-zero to create a flat, dome-like tip */}
       <Cylinder
-        args={[girdleRadius, 0, pavilionHeight, facets]}
+        args={[girdleRadius, girdleRadius * 0.1, pavilionHeight, facets]}
         position={[0, -pavilionHeight / 2, 0]}
       >
         <meshPhysicalMaterial {...materialProps} />
@@ -52,9 +53,9 @@ function Ring() {
   const prongsCenterY = 1.2;
   const gemGirdleY = 1.2; // The Y position where the gem's girdle sits
 
-  // Adjust prong positions for an oval gem
-  const prongXOffset = 0.28;
-  const prongZOffset = 0.42;
+  // Adjust prong positions for the larger oval gem
+  const prongXOffset = 0.35;
+  const prongZOffset = 0.52;
   const prongPositions: [number, number, number][] = [
     [prongXOffset, prongsCenterY, prongZOffset],
     [-prongXOffset, prongsCenterY, prongZOffset],
