@@ -19,7 +19,7 @@ function OvalCutGem({ color }: { color: string }) {
   const girdleRadius = 0.55; // Increased size to make it wider
   const crownHeight = 0.1; // Shorter top part
   const pavilionHeight = 0.25; // Shorter bottom part
-  const facets = 12; // Reduced facets for a multi-faced cut
+  const facets = 8; // Further reduced facets for sharper edges
 
   return (
     // Rotate the entire gem 180 degrees on the X-axis to flip it upside down
