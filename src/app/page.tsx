@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <CustomizerProvider>
       <div className="flex flex-col md:flex-row h-screen w-screen bg-background text-foreground">
-        <aside className="w-full md:w-80 lg:w-96 h-auto md:h-full p-4 overflow-y-auto border-b md:border-b-0 md:border-r border-border">
+        <aside className="w-full h-64 md:w-80 lg:w-96 md:h-full p-4 overflow-y-auto border-b md:border-b-0 md:border-r border-border">
           <h1 className="text-2xl font-bold mb-4">Jewelry Customizer</h1>
           <GemGallery />
         </aside>
@@ -26,5 +26,4 @@ export default function Home() {
         </main>
       </div>
     </CustomizerProvider>
-  );
-}
+  }

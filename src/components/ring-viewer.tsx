@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 
-// A custom component to create an oval cut gem shape with a dome top
+// A custom component to create an oval cut gem shape with a dome top and facets
 function OvalCutGem({ color }: { color: string }) {
   const materialProps = {
     color: color,
@@ -19,7 +19,7 @@ function OvalCutGem({ color }: { color: string }) {
   const girdleRadius = 0.55; // Increased size to make it wider
   const crownHeight = 0.1; // Shorter top part
   const pavilionHeight = 0.25; // Shorter bottom part
-  const facets = 64;
+  const facets = 32; // Reduced facets for a multi-faced cut
 
   return (
     // Rotate the entire gem 180 degrees on the X-axis to flip it upside down
@@ -58,10 +58,12 @@ function Ring() {
   const prongsCenterY = prongsBaseY + prongsHeight / 2;
   const gemGirdleY = prongsCenterY - 0.05; // Adjust gem girdle to sit slightly below prong center
 
-  // Adjust prong positions to sit on the edge of the base and hold the larger gem
-  // These offsets are slightly inside the scaled crown base edge for a better visual connection
-  const prongXOffset = 0.38; // Slightly less than 0.5 * 0.8 = 0.4
-  const prongZOffset = 0.58; // Slightly less than 0.5 * 1.2 = 0.6
+  // Adjust prong positions to sit precisely on the edge of the scaled crown base
+  const crownBaseScaledXRadius = 0.5 * 0.8; // 0.4
+  const crownBaseScaledZRadius = 0.5 * 1.2; // 0.6
+  const prongXOffset = crownBaseScaledXRadius; 
+  const prongZOffset = crownBaseScaledZRadius; 
+  
   const prongPositions: [number, number, number][] = [
     [prongXOffset, prongsCenterY, prongZOffset],
     [-prongXOffset, prongsCenterY, prongZOffset],
