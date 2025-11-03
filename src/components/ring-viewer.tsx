@@ -48,14 +48,15 @@ function OvalCutGem({ color }: { color: string }) {
 function Ring() {
   const { selectedGem } = useCustomizer();
 
-  // Define positions for the setting
   const crownBaseY = 1.1;
   const crownBaseHeight = 0.08;
-  const prongsHeight = 0.3;
+  const prongsHeight = 0.3; // Height of the main vertical part of the prong
+  const hookLength = 0.1; // Length of the horizontal hook part
+  const prongThickness = 0.03; // Radius of the prong cylinders
 
   // Prongs will start from the top surface of the crown base
   const prongsBaseY = crownBaseY + crownBaseHeight / 2;
-  const prongsCenterY = prongsBaseY + prongsHeight / 2;
+  const prongsCenterY = prongsBaseY + prongsHeight / 2; // Center Y for the main prong cylinder
   const gemGirdleY = prongsCenterY - 0.05; // Adjust gem girdle to sit slightly below prong center
 
   // Crown Base dimensions (radius * scale)
@@ -63,15 +64,17 @@ function Ring() {
   const crownBaseScaleX = 0.8;
   const crownBaseScaleZ = 1.2;
 
-  // Calculate prong offsets to sit precisely on the edge of the scaled crown base
-  const prongXOffset = crownBaseRadius * crownBaseScaleX; // 0.6 * 0.8 = 0.48
-  const prongZOffset = crownBaseRadius * crownBaseScaleZ; // 0.6 * 1.2 = 0.72
+  // Calculate prong base offsets to be slightly inside the gem's widest point
+  // Gem's scaled x-radius: 0.55 * 0.8 = 0.44
+  // Gem's scaled z-radius: 0.55 * 1.2 = 0.66
+  const prongBaseXOffset = 0.4; // Slightly inside 0.44
+  const prongBaseZOffset = 0.6; // Slightly inside 0.66
   
   const prongPositions: [number, number, number][] = [
-    [prongXOffset, prongsCenterY, prongZOffset],
-    [-prongXOffset, prongsCenterY, prongZOffset],
-    [prongXOffset, prongsCenterY, -prongZOffset],
-    [-prongXOffset, prongsCenterY, -prongZOffset],
+    [prongBaseXOffset, prongsCenterY, prongBaseZOffset],
+    [-prongBaseXOffset, prongsCenterY, prongBaseZOffset],
+    [prongBaseXOffset, prongsCenterY, -prongBaseZOffset],
+    [-prongBaseXOffset, prongsCenterY, -prongBaseZOffset],
   ];
 
   const gemPositionY = gemGirdleY;
@@ -87,17 +90,35 @@ function Ring() {
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Torus>
 
-      {/* Crown Base - Enlarged to ensure prongs sit on its edge */}
+      {/* Crown Base */}
       <Cylinder args={[crownBaseRadius, crownBaseRadius, crownBaseHeight, 64]} position={[0, crownBaseY, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Cylinder>
 
-      {/* Four-Prong Setting */}
-      {prongPositions.map((pos, i) => (
-        <Cylinder key={i} args={[0.04, 0.04, prongsHeight, 16]} position={pos}>
-           <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
-        </Cylinder>
-      ))}
+      {/* Four-Prong Setting with Hooks */}
+      {prongPositions.map((pos, i) => {
+        // Calculate rotation for the hook to point towards the center (0,0)
+        // The cylinder is initially along Y. Rotate X by PI/2 to make it horizontal along Z.
+        // Then rotate Y to point towards the center.
+        const hookRotationY = Math.atan2(-pos[0], -pos[2]); // atan2(y, x) for vector from pos to origin
+        
+        return (
+          <group key={i} position={pos}>
+            {/* Main vertical part of the prong */}
+            <Cylinder args={[prongThickness, prongThickness, prongsHeight, 16]}>
+              <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+            </Cylinder>
+            {/* Hook part - small cylinder rotated to point inwards over the gem */}
+            <Cylinder 
+              args={[prongThickness, prongThickness, hookLength, 16]} // Small, short cylinder for the hook
+              position={[0, prongsHeight / 2 + hookLength / 2, 0]} // Position above the main prong, centered on its own height
+              rotation={[Math.PI / 2, hookRotationY, 0]} // Rotate to be horizontal and point inwards
+            >
+              <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+            </Cylinder>
+          </group>
+        );
+      })}
       
       {/* Gemstone - Oval cut style */}
       {selectedGem && (
