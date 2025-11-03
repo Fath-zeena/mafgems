@@ -1,11 +1,11 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Box, Torus, Cylinder } from "@react-three/drei";
+import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 
-// A custom component to create an emerald cut gem shape
-function EmeraldCutGem({ color, width, height, depth }: { color: string; width: number; height: number; depth: number }) {
+// A custom component to create an oval cut gem shape with a dome top and facets
+function OvalCutGem({ color }: { color: string }) {
   const materialProps = {
     color: color,
     roughness: 0,
@@ -15,52 +15,66 @@ function EmeraldCutGem({ color, width, height, depth }: { color: string; width: 
     reflectivity: 1,
   };
 
+  // Dimensions for the oval cut - adjusted for shorter, wider dome
+  const girdleRadius = 0.55; // Increased size to make it wider
+  const crownHeight = 0.1; // Shorter top part
+  const pavilionHeight = 0.25; // Shorter bottom part
+  const facets = 32; // Reduced facets for a multi-faced cut
+
   return (
-    // The gem itself is not rotated here; rotation is applied in the Ring component
-    // to align with the prongs.
-    <Box args={[width, height, depth]}>
-      <meshPhysicalMaterial {...materialProps} />
-    </Box>
+    // Rotate the entire gem 180 degrees on the X-axis to flip it upside down
+    // Scale on X and Z axes to create an oval shape
+    <group rotation={[Math.PI, 0, 0]} scale={[0.8, 1, 1.2]}>
+      {/* Crown (Top part of the gem, now at the bottom) */}
+      <Cylinder
+        args={[girdleRadius, girdleRadius, crownHeight, facets]}
+        position={[0, crownHeight / 2, 0]}
+      >
+        <meshPhysicalMaterial {...materialProps} />
+      </Cylinder>
+
+      {/* Pavilion (Bottom part of the gem, now at the top with a dome shape) */}
+      {/* The second argument is wider to create a flat, dome-like top */}
+      <Cylinder
+        args={[girdleRadius, girdleRadius * 0.4, pavilionHeight, facets]}
+        position={[0, -pavilionHeight / 2, 0]}
+      >
+        <meshPhysicalMaterial {...materialProps} />
+      </Cylinder>
+    </group>
   );
 }
 
 function Ring() {
   const { selectedGem } = useCustomizer();
 
-  // Dimensions for the emerald cut gem
-  const gemWidth = 0.6;
-  const gemDepth = 0.4;
-  const gemHeight = 0.3; // Total height of the gem
+  // Define positions for the setting
+  const crownBaseY = 1.1;
+  const crownBaseHeight = 0.08;
+  const prongsHeight = 0.3;
 
-  // Position of the gem's center relative to the ring band
-  const gemPositionY = 0.7; 
-
-  // Prongs will extend from just above the band to slightly above the gem's top surface
-  const prongsBaseY = 0.5; // Starting Y position for prongs, just above the band
-  const prongsTopY = gemPositionY + gemHeight / 2 + 0.05; // Ending Y position, slightly above gem
-  const prongsHeight = prongsTopY - prongsBaseY;
+  // Prongs will start from the top surface of the crown base
+  const prongsBaseY = crownBaseY + crownBaseHeight / 2;
   const prongsCenterY = prongsBaseY + prongsHeight / 2;
+  const gemGirdleY = prongsCenterY - 0.05; // Adjust gem girdle to sit slightly below prong center
 
-  // Rotation for the gem and prongs to match the image
-  const rotationAngle = Math.PI / 4; // 45 degrees
+  // Crown Base dimensions (radius * scale)
+  const crownBaseRadius = 0.6;
+  const crownBaseScaleX = 0.8;
+  const crownBaseScaleZ = 1.2;
 
-  // Calculate prong offsets for a rotated rectangle
-  const halfWidth = gemWidth / 2;
-  const halfDepth = gemDepth / 2;
-
-  // Corners of the unrotated rectangle
-  const corners = [
-    [halfWidth, halfDepth],
-    [-halfWidth, halfDepth],
-    [halfWidth, -halfDepth],
-    [-halfWidth, -halfDepth],
+  // Calculate prong offsets to sit precisely on the edge of the scaled crown base
+  const prongXOffset = crownBaseRadius * crownBaseScaleX; // 0.6 * 0.8 = 0.48
+  const prongZOffset = crownBaseRadius * crownBaseScaleZ; // 0.6 * 1.2 = 0.72
+  
+  const prongPositions: [number, number, number][] = [
+    [prongXOffset, prongsCenterY, prongZOffset],
+    [-prongXOffset, prongsCenterY, prongZOffset],
+    [prongXOffset, prongsCenterY, -prongZOffset],
+    [-prongXOffset, prongsCenterY, -prongZOffset],
   ];
 
-  const prongPositions: [number, number, number][] = corners.map(([x, z]) => {
-    const rotatedX = x * Math.cos(rotationAngle) - z * Math.sin(rotationAngle);
-    const rotatedZ = x * Math.sin(rotationAngle) + z * Math.cos(rotationAngle);
-    return [rotatedX, prongsCenterY, rotatedZ];
-  });
+  const gemPositionY = gemGirdleY;
 
   return (
     <>
@@ -73,6 +87,11 @@ function Ring() {
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Torus>
 
+      {/* Crown Base - Enlarged to ensure prongs sit on its edge */}
+      <Cylinder args={[crownBaseRadius, crownBaseRadius, crownBaseHeight, 64]} position={[0, crownBaseY, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
+        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+      </Cylinder>
+
       {/* Four-Prong Setting */}
       {prongPositions.map((pos, i) => (
         <Cylinder key={i} args={[0.04, 0.04, prongsHeight, 16]} position={pos}>
@@ -80,15 +99,10 @@ function Ring() {
         </Cylinder>
       ))}
       
-      {/* Gemstone - Emerald cut style */}
+      {/* Gemstone - Oval cut style */}
       {selectedGem && (
-        <group position={[0, gemPositionY, 0]} rotation={[0, rotationAngle, 0]}>
-          <EmeraldCutGem 
-            color={selectedGem.color} 
-            width={gemWidth} 
-            height={gemHeight} 
-            depth={gemDepth} 
-          />
+        <group position={[0, gemPositionY, 0]}>
+          <OvalCutGem color={selectedGem.color} />
         </group>
       )}
     </>
