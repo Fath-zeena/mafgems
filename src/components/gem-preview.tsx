@@ -46,7 +46,7 @@ function GemScene({ gem }: { gem: Gem }) {
 const GemPreview = memo(({ gem }: { gem: Gem }) => {
   return (
     <div className="w-[80px] h-[80px] rounded-md cursor-grab">
-      <Canvas camera={{ position: [0, 0, 2.5], fov: 50 }}>
+      <Canvas key={gem.id} camera={{ position: [0, 0, 2.5], fov: 50 }}>
         <GemScene gem={gem} />
       </Canvas>
     </div>
