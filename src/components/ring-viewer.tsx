@@ -50,7 +50,7 @@ function Ring() {
 
   const crownBaseY = 1.1;
   const crownBaseHeight = 0.08;
-  const wallHeight = 0.1; // Reduced to one-third of the previous prongsHeight (0.3 / 3 = 0.1)
+  const wallHeight = 0.05; // Reduced to half of the previous height (0.1 / 2 = 0.05)
 
   // Position calculations for the setting
   const wallBaseY = crownBaseY + crownBaseHeight / 2;
