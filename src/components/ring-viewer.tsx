@@ -15,10 +15,10 @@ function OvalCutGem({ color }: { color: string }) {
     reflectivity: 1,
   };
 
-  // Dimensions for the oval cut
-  const girdleRadius = 0.5; // Made gem larger
-  const crownHeight = 0.15;
-  const pavilionHeight = 0.3; // Made gem shorter (less tall)
+  // Dimensions for the oval cut - adjusted for shorter, wider dome
+  const girdleRadius = 0.55; // Increased size to make it wider
+  const crownHeight = 0.1; // Shorter top part
+  const pavilionHeight = 0.25; // Shorter bottom part
   const facets = 64;
 
   return (
@@ -50,12 +50,18 @@ function Ring() {
 
   // Define positions for the setting
   const crownBaseY = 1.1;
-  const prongsCenterY = 1.2;
-  const gemGirdleY = 1.2;
+  const crownBaseHeight = 0.08;
+  const prongsHeight = 0.3;
+
+  // Prongs will start from the top surface of the crown base
+  const prongsBaseY = crownBaseY + crownBaseHeight / 2;
+  const prongsCenterY = prongsBaseY + prongsHeight / 2;
+  const gemGirdleY = prongsCenterY - 0.05; // Adjust gem girdle to sit slightly below prong center
 
   // Adjust prong positions to sit on the edge of the base and hold the larger gem
-  const prongXOffset = 0.4;
-  const prongZOffset = 0.6;
+  // These offsets are slightly inside the scaled crown base edge for a better visual connection
+  const prongXOffset = 0.38; // Slightly less than 0.5 * 0.8 = 0.4
+  const prongZOffset = 0.58; // Slightly less than 0.5 * 1.2 = 0.6
   const prongPositions: [number, number, number][] = [
     [prongXOffset, prongsCenterY, prongZOffset],
     [-prongXOffset, prongsCenterY, prongZOffset],
@@ -77,13 +83,13 @@ function Ring() {
       </Torus>
 
       {/* Crown Base - Scaled to match prong positions */}
-      <Cylinder args={[0.5, 0.5, 0.08, 64]} position={[0, crownBaseY, 0]} scale={[0.8, 1, 1.2]}>
+      <Cylinder args={[0.5, 0.5, crownBaseHeight, 64]} position={[0, crownBaseY, 0]} scale={[0.8, 1, 1.2]}>
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Cylinder>
 
       {/* Four-Prong Setting */}
       {prongPositions.map((pos, i) => (
-        <Cylinder key={i} args={[0.04, 0.04, 0.3, 16]} position={pos}>
+        <Cylinder key={i} args={[0.04, 0.04, prongsHeight, 16]} position={pos}>
            <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
         </Cylinder>
       ))}
