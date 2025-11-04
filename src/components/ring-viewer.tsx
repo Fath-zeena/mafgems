@@ -137,7 +137,7 @@ export function RingViewer() {
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         
         {/* Group to vertically center the ring */}
-        <group position-y={-0.16}>
+        <group position-y={0.11}>
           <Ring />
         </group>
 
