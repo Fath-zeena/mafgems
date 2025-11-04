@@ -100,26 +100,29 @@ function Ring() {
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Torus>
 
-      {/* Crown Base */}
-      <Cylinder args={[crownBaseRadius, crownBaseRadius, crownBaseHeight, 64]} position={[0, crownBaseY, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
-        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
-      </Cylinder>
+      {/* Group for the crown base, wall, and gem to apply specific rotation */}
+      <group rotation-y={Math.PI / 2}>
+        {/* Crown Base */}
+        <Cylinder args={[crownBaseRadius, crownBaseRadius, crownBaseHeight, 64]} position={[0, crownBaseY, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
+          <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+        </Cylinder>
 
-      {/* Continuous Wall Setting */}
-      <Cylinder 
-        args={[crownBaseRadius, crownBaseRadius, wallHeight, 64]} // Use crownBaseRadius for the wall's radius
-        position={[0, wallCenterY, 0]} // Position on top of the crown base
-        scale={[crownBaseScaleX, 1, crownBaseScaleZ]} // Match the oval shape of the crown base
-      >
-        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
-      </Cylinder>
-      
-      {/* Gemstone - Oval cut style */}
-      {selectedGem && (
-        <group position={[0, gemPositionY, 0]}>
-          <OvalCutGem color={selectedGem.color} gemName={selectedGem.name} />
-        </group>
-      )}
+        {/* Continuous Wall Setting */}
+        <Cylinder 
+          args={[crownBaseRadius, crownBaseRadius, wallHeight, 64]} // Use crownBaseRadius for the wall's radius
+          position={[0, wallCenterY, 0]} // Position on top of the crown base
+          scale={[crownBaseScaleX, 1, crownBaseScaleZ]} // Match the oval shape of the crown base
+        >
+          <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+        </Cylinder>
+        
+        {/* Gemstone - Oval cut style */}
+        {selectedGem && (
+          <group position={[0, gemPositionY, 0]}>
+            <OvalCutGem color={selectedGem.color} gemName={selectedGem.name} />
+          </group>
+        )}
+      </group>
     </>
   );
 }
@@ -159,8 +162,8 @@ export function RingViewer() {
         <spotLight position={[0, 2, 0]} angle={0.3} penumbra={0.5} decay={0} intensity={Math.PI / 2} />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         
-        {/* Group to vertically center the ring and apply Z-axis rotation */}
-        <group position-y={0.11} rotation-z={Math.PI / 2}>
+        {/* Group to vertically center the ring */}
+        <group position-y={0.11}>
           <Ring />
         </group>
 
