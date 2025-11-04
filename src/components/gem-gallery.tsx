@@ -53,7 +53,7 @@ export function GemGallery() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
-            {Array.from({ length: 8 }).map((_, index) => (
+            {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="flex flex-col items-center p-2">
                 <Skeleton className="w-[60px] h-[60px] md:w-[80px] md:h-[80px] rounded-md" />
                 <Skeleton className="h-4 w-16 mt-2" />
