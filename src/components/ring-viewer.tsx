@@ -5,8 +5,8 @@ import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 
 // A custom component to create an oval cut gem shape with a dome top and facets
-function OvalCutGem({ color }: { color: string }) {
-  const materialProps = {
+function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
+  let materialProps: any = {
     color: color,
     roughness: 0,
     transmission: 1,
@@ -14,6 +14,29 @@ function OvalCutGem({ color }: { color: string }) {
     ior: 2.417, // Precise Index of Refraction for diamond
     reflectivity: 1,
   };
+
+  if (gemName === "Diamond") {
+    materialProps = {
+      ...materialProps,
+      color: "#F0F0F0", // Very light gray for visible facets
+      roughness: 0.1, // Slightly more rough to catch light on facets
+      transmission: 0.9, // Slightly less transparent
+      clearcoat: 0.5, // Add a clearcoat for more reflections
+      clearcoatRoughness: 0.1,
+    };
+  } else if (gemName === "Alexandrite") {
+    // Alexandrite: mixture of Amethyst and Aquamarine colors
+    // This is a simplified representation without complex shaders for dynamic color change
+    materialProps = {
+      ...materialProps,
+      color: "#6A0DAD", // A purplish-blue base (blend of Amethyst and Aquamarine)
+      clearcoat: 1,
+      clearcoatRoughness: 0.1,
+      sheen: 1, // Add sheen for a subtle color shift effect
+      sheenColor: "#00CED1", // Aquamarine-like color for sheen
+      transmission: 0.8, // Slightly less transparent to show internal reflections
+    };
+  }
 
   // Dimensions for the oval cut - adjusted for shorter, wider dome
   const girdleRadius = 0.55; // Increased size to make it wider
@@ -94,7 +117,7 @@ function Ring() {
       {/* Gemstone - Oval cut style */}
       {selectedGem && (
         <group position={[0, gemPositionY, 0]}>
-          <OvalCutGem color={selectedGem.color} />
+          <OvalCutGem color={selectedGem.color} gemName={selectedGem.name} />
         </group>
       )}
     </>
@@ -136,8 +159,8 @@ export function RingViewer() {
         <spotLight position={[0, 2, 0]} angle={0.3} penumbra={0.5} decay={0} intensity={Math.PI / 2} />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         
-        {/* Group to vertically center the ring */}
-        <group position-y={0.11}>
+        {/* Group to vertically center the ring and apply Z-axis rotation */}
+        <group position-y={0.11} rotation-z={Math.PI / 2}>
           <Ring />
         </group>
 
