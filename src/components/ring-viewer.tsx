@@ -136,7 +136,10 @@ export function RingViewer() {
         <spotLight position={[0, 2, 0]} angle={0.3} penumbra={0.5} decay={0} intensity={Math.PI / 2} />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         
-        <Ring />
+        {/* Group to vertically center the ring */}
+        <group position-y={-0.16}>
+          <Ring />
+        </group>
 
         <OrbitControls target={[0, 0.75, 0]} />
       </Canvas>
