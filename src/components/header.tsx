@@ -19,7 +19,10 @@ export function Header() {
             Collections
           </Link>
           <Link href="/customizer" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-            Customizer
+            Ring Customizer
+          </Link>
+          <Link href="/necklace-customizer" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            Necklace Customizer
           </Link>
         </nav>
       </div>
