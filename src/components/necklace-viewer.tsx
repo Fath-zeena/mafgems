@@ -53,38 +53,71 @@ function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
   );
 }
 
+// A new component for the small, round accent diamond
+function AccentDiamond() {
+  const materialProps = {
+    color: "#F0F0F0",
+    roughness: 0.1,
+    transmission: 0.9,
+    clearcoat: 0.5,
+    clearcoatRoughness: 0.1,
+    ior: 2.417,
+    reflectivity: 1,
+  };
+
+  const radius = 0.2;
+  const height = 0.15;
+  const facets = 12;
+
+  return (
+    <group>
+      <Cylinder args={[radius, radius, height * 0.3, facets]} position={[0, height * 0.15, 0]}>
+        <meshPhysicalMaterial {...materialProps} />
+      </Cylinder>
+      <Cylinder args={[radius, 0, height * 0.7, facets]} position={[0, -height * 0.35, 0]}>
+        <meshPhysicalMaterial {...materialProps} />
+      </Cylinder>
+    </group>
+  );
+}
+
 // The Necklace component is also defined here.
 function Necklace() {
   const { selectedGem } = useCustomizer();
 
-  const pendantBaseY = 0;
-  const pendantBaseHeight = 0.08;
-  const wallHeight = 0.05;
-
-  const wallBaseY = pendantBaseY + pendantBaseHeight / 2;
-  const wallCenterY = wallBaseY + wallHeight / 2;
-  const gemGirdleY = wallCenterY + wallHeight / 2;
-
-  const pendantBaseRadius = 0.6;
-  const pendantBaseScaleX = 0.8;
-  const pendantBaseScaleZ = 1.2;
-
-  const gemPositionY = gemGirdleY;
+  const chainRadius = 2.5;
+  const linkRadius = 0.05;
+  const numLinks = 80;
 
   return (
     <group>
-      <Torus args={[2.5, 0.03, 32, 100]} rotation={[Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
-      </Torus>
-      <group position={[0, -2.5, 0]}>
-        <Cylinder args={[pendantBaseRadius, pendantBaseRadius, pendantBaseHeight, 64]} position={[0, pendantBaseY, 0]} scale={[pendantBaseScaleX, 1, pendantBaseScaleZ]}>
-          <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
-        </Cylinder>
-        <Cylinder args={[pendantBaseRadius, pendantBaseRadius, wallHeight, 64]} position={[0, wallCenterY, 0]} scale={[pendantBaseScaleX, 1, pendantBaseScaleZ]}>
-          <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
-        </Cylinder>
+      {/* Realistic Chain */}
+      {Array.from({ length: numLinks }).map((_, i) => {
+        const angle = (i / numLinks) * Math.PI;
+        const x = Math.cos(angle) * chainRadius;
+        const y = Math.sin(angle) * chainRadius;
+        return (
+          <Torus
+            key={i}
+            args={[linkRadius, 0.015, 16, 32]}
+            position={[x, y, 0]}
+            rotation={[0, 0, angle + Math.PI / 2]}
+          >
+            <meshStandardMaterial color="#C0C0C0" metalness={0.9} roughness={0.1} />
+          </Torus>
+        );
+      })}
+
+      {/* Pendant */}
+      <group position={[0, 0, 0]}>
+        {/* Accent Diamond */}
+        <group position={[0, 0.3, 0]}>
+          <AccentDiamond />
+        </group>
+
+        {/* Main Gemstone */}
         {selectedGem && (
-          <group position={[0, gemPositionY, 0]}>
+          <group>
             <OvalCutGem color={selectedGem.color} gemName={selectedGem.name} />
           </group>
         )}
@@ -121,7 +154,7 @@ export function NecklaceViewer() {
         <spotLight position={[-5, 5, 5]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI / 3} />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         <Necklace />
-        <OrbitControls target={[0, -1, 0]} />
+        <OrbitControls target={[0, 0, 0]} />
       </Canvas>
     </div>
   );
