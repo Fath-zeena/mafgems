@@ -2,12 +2,61 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
-import { Ring } from "./ring-viewer";
-import { Necklace } from "./necklace-viewer";
+import { OvalCutGem } from "./gem-model";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import * as THREE from 'three';
+
+// Ring model, now defined locally within the unified viewer
+function Ring() {
+  const { selectedGem } = useCustomizer();
+  return (
+    <group position-y={0.11}>
+      <Torus args={[1, 0.06, 32, 100]} rotation={[Math.PI / 2, Math.PI / 2, 0]} scale={[1, 1, 1.5]}>
+        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+      </Torus>
+      <group rotation-y={Math.PI / 2}>
+        <Cylinder args={[0.6, 0.6, 0.08, 64]} position={[0, 1.1, 0]} scale={[0.8, 1, 1.2]}>
+          <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+        </Cylinder>
+        <Cylinder args={[0.6, 0.6, 0.05, 64]} position={[0, 1.1 + 0.08 / 2 + 0.05 / 2, 0]} scale={[0.8, 1, 1.2]}>
+          <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+        </Cylinder>
+        {selectedGem && (
+          <group position={[0, 1.1 + 0.08 / 2 + 0.05, 0]}>
+            <OvalCutGem color={selectedGem.color} gemName={selectedGem.name} />
+          </group>
+        )}
+      </group>
+    </group>
+  );
+}
+
+// Necklace model, now defined locally within the unified viewer
+function Necklace() {
+  const { selectedGem } = useCustomizer();
+  return (
+    <group>
+      <Torus args={[2.5, 0.03, 32, 100]} rotation={[Math.PI / 2, 0, 0]}>
+        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+      </Torus>
+      <group position={[0, -2.5, 0]}>
+        <Cylinder args={[0.6, 0.6, 0.08, 64]} position={[0, 0, 0]} scale={[0.8, 1, 1.2]}>
+          <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+        </Cylinder>
+        <Cylinder args={[0.6, 0.6, 0.05, 64]} position={[0, 0.08 / 2 + 0.05 / 2, 0]} scale={[0.8, 1, 1.2]}>
+          <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+        </Cylinder>
+        {selectedGem && (
+          <group position={[0, 0.08 / 2 + 0.05, 0]}>
+            <OvalCutGem color={selectedGem.color} gemName={selectedGem.name} />
+          </group>
+        )}
+      </group>
+    </group>
+  );
+}
 
 export function JewelryViewer() {
   const { setSelectedGem } = useCustomizer();
