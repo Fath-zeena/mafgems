@@ -1,30 +1,26 @@
 "use client";
 
-import { GemGallery } from "@/components/gem-gallery";
-import dynamic from "next/dynamic";
-import { Skeleton } from "@/components/ui/skeleton";
-import { CustomizerProvider } from "@/context/customizer-context";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-const DynamicRingViewer = dynamic(
-  () => import("@/components/ring-viewer").then((mod) => mod.RingViewer),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="w-full h-full" />,
-  }
-);
-
-export default function Home() {
+export default function HomePage() {
   return (
-    <CustomizerProvider>
-      <div className="flex flex-col md:flex-row h-screen w-screen bg-background text-foreground">
-        <aside className="w-full h-[50vh] md:w-80 lg:w-96 md:h-full p-4 overflow-y-auto border-b md:border-b-0 md:border-r border-border">
-          <h1 className="text-2xl font-bold mb-4">Jewelry Customizer</h1>
-          <GemGallery />
-        </aside>
-        <main className="flex-1 h-[50vh] md:h-full">
-          <DynamicRingViewer />
-        </main>
+    <div className="flex flex-col items-center justify-center text-center h-full py-20 px-4">
+      <div className="max-w-3xl">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground">
+          Exquisite Craftsmanship, Timeless Design
+        </h1>
+        <p className="mt-6 text-lg md:text-xl text-muted-foreground">
+          Discover the art of fine jewelry. Each piece is a testament to our dedication to quality and elegance. Create your own unique masterpiece with our interactive customizer.
+        </p>
+        <div className="mt-10">
+          <Link href="/customizer">
+            <Button size="lg" className="text-lg px-8 py-6">
+              Create Your Own
+            </Button>
+          </Link>
+        </div>
       </div>
-    </CustomizerProvider>
+    </div>
   );
 }
