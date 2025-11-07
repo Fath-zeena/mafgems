@@ -5,33 +5,33 @@ import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 import { OvalCutGem } from "./gem-model";
 
-function Ring() {
+function Necklace() {
   const { selectedGem } = useCustomizer();
 
-  const crownBaseY = 1.1;
-  const crownBaseHeight = 0.08;
+  const pendantBaseY = 0;
+  const pendantBaseHeight = 0.08;
   const wallHeight = 0.05;
 
-  const wallBaseY = crownBaseY + crownBaseHeight / 2;
+  const wallBaseY = pendantBaseY + pendantBaseHeight / 2;
   const wallCenterY = wallBaseY + wallHeight / 2;
   const gemGirdleY = wallCenterY + wallHeight / 2;
 
-  const crownBaseRadius = 0.6;
-  const crownBaseScaleX = 0.8;
-  const crownBaseScaleZ = 1.2;
+  const pendantBaseRadius = 0.6;
+  const pendantBaseScaleX = 0.8;
+  const pendantBaseScaleZ = 1.2;
 
   const gemPositionY = gemGirdleY;
 
   return (
     <>
-      <Torus args={[1, 0.06, 32, 100]} rotation={[Math.PI / 2, Math.PI / 2, 0]} scale={[1, 1, 1.5]}>
+      <Torus args={[2.5, 0.03, 32, 100]} rotation={[Math.PI / 2, 0, 0]}>
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Torus>
-      <group rotation-y={Math.PI / 2}>
-        <Cylinder args={[crownBaseRadius, crownBaseRadius, crownBaseHeight, 64]} position={[0, crownBaseY, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
+      <group position={[0, -2.5, 0]}>
+        <Cylinder args={[pendantBaseRadius, pendantBaseRadius, pendantBaseHeight, 64]} position={[0, pendantBaseY, 0]} scale={[pendantBaseScaleX, 1, pendantBaseScaleZ]}>
           <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
         </Cylinder>
-        <Cylinder args={[crownBaseRadius, crownBaseRadius, wallHeight, 64]} position={[0, wallCenterY, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
+        <Cylinder args={[pendantBaseRadius, pendantBaseRadius, wallHeight, 64]} position={[0, wallCenterY, 0]} scale={[pendantBaseScaleX, 1, pendantBaseScaleZ]}>
           <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
         </Cylinder>
         {selectedGem && (
@@ -44,7 +44,7 @@ function Ring() {
   );
 }
 
-export function RingViewer() {
+export function NecklaceViewer() {
   const { setSelectedGem } = useCustomizer();
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -66,15 +66,13 @@ export function RingViewer() {
 
   return (
     <div className="w-full h-full bg-gray-200 dark:bg-gray-950" onDrop={handleDrop} onDragOver={handleDragOver}>
-      <Canvas camera={{ position: [3, 2, 3], fov: 45 }}>
+      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
         <ambientLight intensity={Math.PI} />
-        <spotLight position={[3, 5, 3]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI / 3} />
-        <spotLight position={[0, 2, 0]} angle={0.3} penumbra={0.5} decay={0} intensity={Math.PI / 2} />
+        <spotLight position={[5, 5, 5]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI / 3} />
+        <spotLight position={[-5, 5, 5]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI / 3} />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-        <group position-y={0.11}>
-          <Ring />
-        </group>
-        <OrbitControls target={[0, 0.75, 0]} />
+        <Necklace />
+        <OrbitControls target={[0, -1, 0]} />
       </Canvas>
     </div>
   );
