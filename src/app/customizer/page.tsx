@@ -36,7 +36,7 @@ export default function CustomizerPage() {
               <TabsTrigger value="ring">Ring</TabsTrigger>
               <TabsTrigger value="necklace">Necklace</TabsTrigger>
             </TabsList>
-            <div className="relative flex-grow w-full h-full">
+            <div className="relative flex-grow w-full">
               <TabsContent value="ring" className="absolute inset-0 w-full h-full">
                 <DynamicRingViewer />
               </TabsContent>
