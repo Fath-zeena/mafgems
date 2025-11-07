@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 import { SegmentedControl } from "./segmented-control";
 import { Ring } from "./ring-viewer";
 import { Necklace } from "./necklace-viewer";
+import * as THREE from 'three';
 
 export function JewelryViewer() {
   const { setSelectedGem } = useCustomizer();
   const [view, setView] = useState("ring");
+  const orbitControlsRef = useRef<any>(null);
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -28,6 +30,14 @@ export function JewelryViewer() {
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
+
+  useEffect(() => {
+    if (orbitControlsRef.current) {
+      const target = view === "ring" ? new THREE.Vector3(0, 0.75, 0) : new THREE.Vector3(0, -1, 0);
+      orbitControlsRef.current.target.copy(target);
+      orbitControlsRef.current.update();
+    }
+  }, [view]);
 
   return (
     <div className="w-full h-full relative" onDrop={handleDrop} onDragOver={handleDragOver}>
@@ -47,10 +57,14 @@ export function JewelryViewer() {
         <spotLight position={[0, 2, 0]} angle={0.3} penumbra={0.5} decay={0} intensity={Math.PI / 2} />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         
-        {view === "ring" && <Ring />}
-        {view === "necklace" && <Necklace />}
+        <group visible={view === 'ring'}>
+          <Ring />
+        </group>
+        <group visible={view === 'necklace'}>
+          <Necklace />
+        </group>
         
-        <OrbitControls target={view === "ring" ? [0, 0.75, 0] : [0, -1, 0]} />
+        <OrbitControls ref={orbitControlsRef} target={[0, 0.75, 0]} />
       </Canvas>
     </div>
   );
