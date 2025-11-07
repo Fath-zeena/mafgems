@@ -36,12 +36,15 @@ export default function CustomizerPage() {
               <TabsTrigger value="ring">Ring</TabsTrigger>
               <TabsTrigger value="necklace">Necklace</TabsTrigger>
             </TabsList>
-            <TabsContent value="ring" className="flex-grow">
-              <DynamicRingViewer />
-            </TabsContent>
-            <TabsContent value="necklace" className="flex-grow">
-              <DynamicNecklaceViewer />
-            </TabsContent>
+            {/* This container is the key. It's relative and will grow to fill the remaining space. */}
+            <div className="relative flex-grow w-full">
+              <TabsContent value="ring" className="absolute inset-0 w-full h-full">
+                <DynamicRingViewer />
+              </TabsContent>
+              <TabsContent value="necklace" className="absolute inset-0 w-full h-full">
+                <DynamicNecklaceViewer />
+              </TabsContent>
+            </div>
           </Tabs>
         </main>
       </div>
