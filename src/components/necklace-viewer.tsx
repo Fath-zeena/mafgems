@@ -109,7 +109,7 @@ function Necklace() {
       })}
 
       {/* Pendant */}
-      <group position={[0, 0, 0]}>
+      <group position={[0, -chainRadius, 0]}>
         {/* Accent Diamond */}
         <group position={[0, 0.3, 0]}>
           <AccentDiamond />
