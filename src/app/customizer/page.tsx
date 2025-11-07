@@ -5,8 +5,8 @@ import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CustomizerProvider } from "@/context/customizer-context";
 
-const DynamicRingViewer = dynamic(
-  () => import("@/components/ring-viewer").then((mod) => mod.RingViewer),
+const DynamicJewelryViewer = dynamic(
+  () => import("@/components/jewelry-viewer").then((mod) => mod.JewelryViewer),
   {
     ssr: false,
     loading: () => <Skeleton className="w-full h-full" />,
@@ -22,7 +22,7 @@ export default function CustomizerPage() {
           <GemGallery />
         </aside>
         <main className="flex-1 h-full">
-          <DynamicRingViewer />
+          <DynamicJewelryViewer />
         </main>
       </div>
     </CustomizerProvider>
