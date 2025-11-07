@@ -15,6 +15,9 @@ export function Header() {
           <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
             Home
           </Link>
+          <Link href="/collections" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            Collections
+          </Link>
           <Link href="/customizer" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
             Customizer
           </Link>
