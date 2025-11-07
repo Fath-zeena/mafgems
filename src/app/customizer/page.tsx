@@ -30,18 +30,20 @@ export default function CustomizerPage() {
           <h1 className="text-2xl font-bold mb-4">Jewelry Customizer</h1>
           <GemGallery />
         </aside>
-        <main className="flex-1 h-full">
-          <Tabs defaultValue="ring" className="w-full h-full flex flex-col">
-            <TabsList className="mx-auto mt-2">
+        <main className="flex-1 h-full flex flex-col">
+          <Tabs defaultValue="ring" className="w-full flex flex-col flex-grow">
+            <TabsList className="mx-auto mt-2 flex-shrink-0">
               <TabsTrigger value="ring">Ring</TabsTrigger>
               <TabsTrigger value="necklace">Necklace</TabsTrigger>
             </TabsList>
-            <TabsContent value="ring" className="flex-grow">
-              <DynamicRingViewer />
-            </TabsContent>
-            <TabsContent value="necklace" className="flex-grow">
-              <DynamicNecklaceViewer />
-            </TabsContent>
+            <div className="relative flex-grow w-full h-full">
+              <TabsContent value="ring" className="absolute inset-0 w-full h-full">
+                <DynamicRingViewer />
+              </TabsContent>
+              <TabsContent value="necklace" className="absolute inset-0 w-full h-full">
+                <DynamicNecklaceViewer />
+              </TabsContent>
+            </div>
           </Tabs>
         </main>
       </div>
