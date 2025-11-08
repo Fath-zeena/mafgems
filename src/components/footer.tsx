@@ -11,7 +11,7 @@ export function Footer() {
             <Gem className="h-6 w-6" />
             <span className="text-xl font-semibold">MAFGEMS</span>
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-[0.7rem] text-muted-foreground">
             © {new Date().getFullYear()} MAFGEMS. All rights reserved.
           </p>
         </div>
