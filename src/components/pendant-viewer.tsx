@@ -111,7 +111,7 @@ export function PendantViewer() {
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
     >
-      <Canvas camera={{ position: [0, 4, 0], fov: 45 }}>
+      <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
         <ambientLight intensity={Math.PI * 0.5} />
         <spotLight position={[5, 5, 5]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI} />
         <spotLight position={[-5, 5, 5]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI} />
