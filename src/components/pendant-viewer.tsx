@@ -13,23 +13,27 @@ function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
   if (gemName === "Alexandrite") materialProps = { ...materialProps, color: "#6A0DAD", clearcoat: 1, clearcoatRoughness: 0.1, sheen: 1, sheenColor: "#00CED1", transmission: 0.8 };
   return (
     <group rotation={[Math.PI, 0, 0]} scale={[0.8, 1.2, 1]}>
-      <Cylinder args={[0.55, 0.55, 0.1, 16]} position={[0, 0.05, 0]}><meshPhysicalMaterial {...materialProps} /></Cylinder>
-      <Cylinder args={[0.55, 0.22, 0.25, 16]} position={[0, -0.125, 0]}><meshPhysicalMaterial {...materialProps} /></Cylinder>
+      <Cylinder args={[0.55, 0.55, 0.1, 16]} position={[0, 0.05, 0]}>
+        <meshPhysicalMaterial {...materialProps} />
+      </Cylinder>
+      <Cylinder args={[0.55, 0.22, 0.25, 16]} position={[0, -0.125, 0]}>
+        <meshPhysicalMaterial {...materialProps} />
+      </Cylinder>
     </group>
   );
 }
 
 // Helper for decorative sphere clusters
-function GranulationCluster({ scale = 1 }: { scale?: number }) {
+function GranulationCluster({ scale = 1, material }: { scale?: number; material: THREE.Material }) {
   const sphereRadius = 0.03 * scale;
   const offset = 0.04 * scale;
   return (
     <group>
-      <Sphere args={[sphereRadius, 16, 16]} position={[0, 0, 0]} />
-      <Sphere args={[sphereRadius, 16, 16]} position={[offset, 0, 0]} />
-      <Sphere args={[sphereRadius, 16, 16]} position={[-offset, 0, 0]} />
-      <Sphere args={[sphereRadius, 16, 16]} position={[0, offset, 0]} />
-      <Sphere args={[sphereRadius, 16, 16]} position={[0, -offset, 0]} />
+      <Sphere args={[sphereRadius, 16, 16]} position={[0, 0, 0]} material={material} />
+      <Sphere args={[sphereRadius, 16, 16]} position={[offset, 0, 0]} material={material} />
+      <Sphere args={[sphereRadius, 16, 16]} position={[-offset, 0, 0]} material={material} />
+      <Sphere args={[sphereRadius, 16, 16]} position={[0, offset, 0]} material={material} />
+      <Sphere args={[sphereRadius, 16, 16]} position={[0, -offset, 0]} material={material} />
     </group>
   );
 }
@@ -44,7 +48,9 @@ function Pendant() {
       {/* Bail (connector) */}
       <group position={[0, 0.9, 0]}>
         <Torus args={[0.15, 0.02, 16, 32]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0.2, 0]} material={roseGoldMaterial} />
-        <group position={[0, 0.05, 0]}><GranulationCluster scale={0.8} /></group>
+        <group position={[0, 0.05, 0]}>
+          <GranulationCluster scale={0.8} material={roseGoldMaterial} />
+        </group>
       </group>
 
       {/* Main Pendant */}
@@ -52,10 +58,18 @@ function Pendant() {
         <Torus args={[0.7, 0.03, 16, 16]} rotation={[Math.PI / 2, 0, 0]} material={roseGoldMaterial} />
         <Torus args={[0.6, 0.04, 16, 64]} rotation={[Math.PI / 2, 0, 0]} material={roseGoldMaterial} />
         <Cylinder args={[0.55, 0.55, 0.1, 64]} position={[0, 0, 0]} material={roseGoldMaterial} />
-        <group position={[0.5, 0, 0]} rotation={[0, 0, -Math.PI / 12]}><GranulationCluster /></group>
-        <group position={[-0.5, 0, 0]} rotation={[0, 0, Math.PI / 12]}><GranulationCluster /></group>
-        <group position={[0, 0, 0.65]} rotation={[Math.PI / 12, 0, 0]}><GranulationCluster /></group>
-        <group position={[0, 0, -0.65]} rotation={[-Math.PI / 12, 0, 0]}><GranulationCluster /></group>
+        <group position={[0.5, 0, 0]} rotation={[0, 0, -Math.PI / 12]}>
+          <GranulationCluster material={roseGoldMaterial} />
+        </group>
+        <group position={[-0.5, 0, 0]} rotation={[0, 0, Math.PI / 12]}>
+          <GranulationCluster material={roseGoldMaterial} />
+        </group>
+        <group position={[0, 0, 0.65]} rotation={[Math.PI / 12, 0, 0]}>
+          <GranulationCluster material={roseGoldMaterial} />
+        </group>
+        <group position={[0, 0, -0.65]} rotation={[-Math.PI / 12, 0, 0]}>
+          <GranulationCluster material={roseGoldMaterial} />
+        </group>
       </group>
 
       {selectedGem && <group position-y={0.05}><OvalCutGem color={selectedGem.color} gemName={selectedGem.name} /></group>}
@@ -77,9 +91,7 @@ export function PendantViewer() {
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDragging.current) return;
     const deltaX = e.clientX - previousMouseX.current;
-    // Adjust rotation speed with a scaling factor
     const newRotation = rotationY + deltaX * 0.01;
-    // Clamp rotation to 180 degrees (-90 to +90)
     const clampedRotation = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, newRotation));
     setRotationY(clampedRotation);
     previousMouseX.current = e.clientX;
