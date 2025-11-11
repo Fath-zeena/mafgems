@@ -1,5 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
@@ -12,7 +13,7 @@ const nextConfig = {
     if (process.env.NODE_ENV === "development") {
       config.module.rules.push({
         test: /\.(jsx|tsx)$/,
-        exclude: [/node_modules/, /ring-viewer\.tsx$/, /pendant-viewer\.tsx$/],
+        exclude: [/node_modules/, /ring-viewer\.tsx$/],
         enforce: "pre",
         use: "@dyad-sh/nextjs-webpack-component-tagger",
       });
@@ -21,4 +22,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

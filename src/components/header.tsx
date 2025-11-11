@@ -21,6 +21,9 @@ export function Header() {
           <Link href="/customizer" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
             Ring Customizer
           </Link>
+          <Link href="/pendant-customizer" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            Pendant Customizer
+          </Link>
         </nav>
       </div>
     </header>
