@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     if (process.env.NODE_ENV === "development") {
       config.module.rules.push({
         test: /\.(jsx|tsx)$/,
-        exclude: [/node_modules/, /ring-viewer\.tsx$/, /pendant-viewer\.tsx$/],
+        exclude: [/node_modules/, /ring-viewer\.tsx$/],
         enforce: "pre",
         use: "@dyad-sh/nextjs-webpack-component-tagger",
       });
