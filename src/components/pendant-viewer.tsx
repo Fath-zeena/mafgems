@@ -91,10 +91,13 @@ export function PendantViewer() {
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    e.stopPropagation(); // Stop propagation to ensure clean handling
     const gemDataString = e.dataTransfer.getData("application/json");
+    
     if (gemDataString) {
       try {
         const gem = JSON.parse(gemDataString);
+        console.log("Dropped gem data:", gem); // Debugging log
         setSelectedGem(gem);
       } catch (error) {
         console.error("Failed to parse dropped gem data:", error);
@@ -104,10 +107,16 @@ export function PendantViewer() {
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = 'copy'; // Explicitly set drop effect
   };
 
   return (
-    <div className="w-full h-full bg-gray-200 dark:bg-gray-950" onDrop={handleDrop} onDragOver={handleDragOver}>
+    <div 
+      className="w-full h-full bg-gray-200 dark:bg-gray-950"
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+    >
       <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
         <ambientLight intensity={Math.PI} />
         <spotLight position={[5, 5, 5]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI / 3} />
