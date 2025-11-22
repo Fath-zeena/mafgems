@@ -13,10 +13,15 @@ export default function HomePage() {
         <p className="mt-6 text-lg md:text-xl text-muted-foreground">
           Discover the art of fine jewelry. Each piece is a testament to our dedication to quality and elegance. Create your own unique masterpiece with our interactive customizer.
         </p>
-        <div className="mt-10">
+        <div className="mt-10 flex justify-center space-x-4">
           <Link href="/customizer">
             <Button size="lg" className="text-lg px-8 py-6">
               Create Your Own
+            </Button>
+          </Link>
+          <Link href="/collections">
+            <Button size="lg" variant="outline" className="text-lg px-8 py-6">
+              View Collections
             </Button>
           </Link>
         </div>

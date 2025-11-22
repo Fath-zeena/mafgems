@@ -21,7 +21,7 @@ export default function CustomizerPage() {
           <h1 className="text-2xl font-bold mb-4">Jewelry Customizer</h1>
           <GemGallery />
         </aside>
-        <main className="flex-1 h-full">
+        <main className="flex-1 h-full mt-[-5px] md:mt-0">
           <DynamicRingViewer />
         </main>
       </div>
