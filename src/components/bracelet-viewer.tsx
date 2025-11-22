@@ -3,6 +3,7 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Cylinder, Torus, Sphere } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
+import * as THREE from 'three'; // <-- Added THREE import
 
 // --- Reusable Gem Models (Self-Contained) ---
 
