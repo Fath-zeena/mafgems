@@ -29,7 +29,6 @@ function Bracelet() {
         {/* Center Oval Gem Slot (Large) */}
         {selectedGem && (
           <group position={[0, 0, 0.05]}>
-            {/* Removed scale prop from group, applied scale to component */}
             <OvalCutGem color={selectedGem.color} gemName={selectedGem.name} scale={0.8} />
           </group>
         )}
