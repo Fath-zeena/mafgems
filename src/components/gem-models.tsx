@@ -25,10 +25,18 @@ export function OvalCutGem({ color, gemName, scale = 1 }: { color: string; gemNa
 
   return (
     <group rotation={[Math.PI, 0, 0]} scale={[0.8, 1.2, 1]}>
-      <Cylinder args={[girdleRadius, girdleRadius, crownHeight, facets]} position={[0, crownHeight / 2, 0]}>
-        <meshPhysicalMaterial {...materialProps} />
+      {/* Explicitly passing material as a prop instead of a child to avoid potential R3F issues */}
+      <Cylinder 
+        args={[girdleRadius, girdleRadius, crownHeight, facets]} 
+        position={[0, crownHeight / 2, 0]}
+      >
+         <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
-      <Cylinder args={[girdleRadius, girdleRadius * 0.4, pavilionHeight, facets]} position={[0, -pavilionHeight / 2, 0]}>
+      
+      <Cylinder 
+        args={[girdleRadius, girdleRadius * 0.4, pavilionHeight, facets]} 
+        position={[0, -pavilionHeight / 2, 0]}
+      >
         <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
     </group>
@@ -55,10 +63,17 @@ export function RoundCutGem({ color, gemName, scale = 1 }: { color: string; gemN
 
   return (
     <group rotation={[Math.PI, 0, 0]}>
-      <Cylinder args={[radius, radius, height * 0.3, facets]} position={[0, height * 0.15, 0]}>
+      <Cylinder 
+        args={[radius, radius, height * 0.3, facets]} 
+        position={[0, height * 0.15, 0]}
+      >
         <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
-      <Cylinder args={[radius, 0, height * 0.7, facets]} position={[0, -height * 0.35, 0]}>
+      
+      <Cylinder 
+        args={[radius, 0, height * 0.7, facets]} 
+        position={[0, -height * 0.35, 0]}
+      >
         <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
     </group>
