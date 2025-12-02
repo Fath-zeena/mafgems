@@ -4,48 +4,60 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 
-// Self-contained gem component using declarative materials
+// 1. Reusing the exact same stable Gem logic from RingViewer
 function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
-  const isDiamond = gemName === "Diamond";
-  const isAlexandrite = gemName === "Alexandrite";
+  let materialProps: any = {
+    color: color,
+    roughness: 0,
+    transmission: 1,
+    thickness: 2,
+    ior: 2.417,
+    reflectivity: 1,
+  };
+
+  if (gemName === "Diamond") {
+    materialProps = {
+      ...materialProps,
+      color: "#F0F0F0",
+      roughness: 0.1,
+      transmission: 0.9,
+      clearcoat: 0.5,
+      clearcoatRoughness: 0.1,
+    };
+  } else if (gemName === "Alexandrite") {
+    materialProps = {
+      ...materialProps,
+      color: "#6A0DAD",
+      clearcoat: 1,
+      clearcoatRoughness: 0.1,
+      sheen: 1,
+      sheenColor: "#00CED1",
+      transmission: 0.8,
+    };
+  }
+
+  const girdleRadius = 0.55;
+  const crownHeight = 0.1;
+  const pavilionHeight = 0.25;
+  const facets = 16;
 
   return (
     <group rotation={[Math.PI, 0, 0]} scale={[0.8, 1, 1.2]}>
-      <Cylinder args={[0.55, 0.55, 0.1, 16]} position={[0, 0.05, 0]}>
-        <meshPhysicalMaterial 
-          color={isDiamond ? "#F0F0F0" : (isAlexandrite ? "#6A0DAD" : color)}
-          roughness={isDiamond ? 0.1 : 0}
-          transmission={isDiamond ? 0.9 : (isAlexandrite ? 0.8 : 1)}
-          thickness={2}
-          ior={2.417}
-          reflectivity={1}
-          clearcoat={isDiamond || isAlexandrite ? (isDiamond ? 0.5 : 1) : 0}
-          clearcoatRoughness={0.1}
-          sheen={isAlexandrite ? 1 : 0}
-          sheenColor={isAlexandrite ? "#00CED1" : undefined}
-        />
+      <Cylinder args={[girdleRadius, girdleRadius, crownHeight, facets]} position={[0, crownHeight / 2, 0]}>
+        <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
-      <Cylinder args={[0.55, 0.22, 0.25, 16]} position={[0, -0.125, 0]}>
-        <meshPhysicalMaterial 
-          color={isDiamond ? "#F0F0F0" : (isAlexandrite ? "#6A0DAD" : color)}
-          roughness={isDiamond ? 0.1 : 0}
-          transmission={isDiamond ? 0.9 : (isAlexandrite ? 0.8 : 1)}
-          thickness={2}
-          ior={2.417}
-          reflectivity={1}
-          clearcoat={isDiamond || isAlexandrite ? (isDiamond ? 0.5 : 1) : 0}
-          clearcoatRoughness={0.1}
-          sheen={isAlexandrite ? 1 : 0}
-          sheenColor={isAlexandrite ? "#00CED1" : undefined}
-        />
+      <Cylinder args={[girdleRadius, girdleRadius * 0.4, pavilionHeight, facets]} position={[0, -pavilionHeight / 2, 0]}>
+        <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
     </group>
   );
 }
 
+// 2. Bracelet Model constructed using the same declarative pattern as the Ring
 function Bracelet() {
   const { selectedGem } = useCustomizer();
 
+  // Settings for the crown (same as Ring)
   const crownBaseHeight = 0.08;
   const wallHeight = 0.05;
   const crownBaseRadius = 0.6;
@@ -53,19 +65,20 @@ function Bracelet() {
   const crownBaseScaleZ = 1.2;
 
   return (
-    <group>
-      {/* Simple Chain - Declarative Material */}
-      <Torus args={[2.8, 0.05, 16, 100]} rotation={[Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
-      </Torus>
+    <group rotation={[0, Math.PI / 2, 0]}>
+      {/* Bracelet Band (Cuff style) - using declarative material */}
+      <Cylinder args={[2.5, 2.5, 1.5, 64, 1, false, 0, Math.PI * 1.7]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} side={2} /> {/* side={2} is DoubleSide */}
+      </Cylinder>
 
-      {/* The Crown Setting */}
-      <group position={[0, 0, 2.8]} rotation={[Math.PI / 2, 0, 0]}>
-        {/* Base */}
+      {/* Decorative Crown Setting - Attached to the front of the band */}
+      <group position={[0, 0, 2.5]} rotation={[Math.PI / 2, 0, 0]}>
+        {/* Crown Base */}
         <Cylinder args={[crownBaseRadius, crownBaseRadius, crownBaseHeight, 64]} position={[0, -crownBaseHeight/2, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
           <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
         </Cylinder>
-        {/* Wall */}
+        
+        {/* Crown Wall */}
         <Cylinder args={[crownBaseRadius, crownBaseRadius, wallHeight, 64]} position={[0, crownBaseHeight/2, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
           <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
         </Cylinder>
@@ -81,6 +94,7 @@ function Bracelet() {
   );
 }
 
+// 3. Viewer Component with Lighting and Controls
 export function BraceletViewer() {
   const { setSelectedGem } = useCustomizer();
 
@@ -103,7 +117,7 @@ export function BraceletViewer() {
 
   return (
     <div className="w-full h-full bg-gray-200 dark:bg-gray-950" onDrop={handleDrop} onDragOver={handleDragOver}>
-      <Canvas camera={{ position: [0, 5, 5], fov: 45 }}>
+      <Canvas camera={{ position: [0, 5, 8], fov: 45 }}>
         <ambientLight intensity={Math.PI} />
         <spotLight position={[5, 5, 5]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI / 3} />
         <spotLight position={[-5, 5, 5]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI / 3} />
