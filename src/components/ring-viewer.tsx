@@ -1,10 +1,10 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 
-// Self-contained OvalCutGem with material logic
+// The OvalCutGem component is defined inside this file to prevent any import errors.
 function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
   let materialProps: any = {
     color: color,
@@ -53,7 +53,7 @@ function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
   );
 }
 
-// Ring Model
+// The Ring component is also defined here.
 function Ring() {
   const { selectedGem } = useCustomizer();
 
@@ -73,12 +73,9 @@ function Ring() {
 
   return (
     <group position-y={0.11}>
-      {/* Ring Band */}
       <Torus args={[1, 0.06, 32, 100]} rotation={[Math.PI / 2, Math.PI / 2, 0]} scale={[1, 1, 1.5]}>
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Torus>
-      
-      {/* Crown Setting Group (Rotated 90 degrees on Y-axis to orient oval correctly) */}
       <group rotation-y={Math.PI / 2}>
         <Cylinder args={[crownBaseRadius, crownBaseRadius, crownBaseHeight, 64]} position={[0, crownBaseY, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
           <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
@@ -96,7 +93,24 @@ function Ring() {
   );
 }
 
-// Viewer Component
+// Hook to capture the canvas image
+function SceneCapture() {
+  const { gl } = useThree();
+  
+  const captureImage = () => {
+    // Force render before capture
+    gl.render();
+    const dataURL = gl.domElement.toDataURL('image/jpeg', 0.9);
+    return dataURL;
+  };
+
+  // Expose capture function globally for the button to use
+  (window as any).captureRingImage = captureImage;
+  
+  return null;
+}
+
+
 export function RingViewer() {
   const { setSelectedGem } = useCustomizer();
 
@@ -121,12 +135,12 @@ export function RingViewer() {
     <div className="w-full h-full bg-gray-200 dark:bg-gray-950" onDrop={handleDrop} onDragOver={handleDragOver}>
       <Canvas camera={{ position: [3, 2, 3], fov: 45 }}>
         <ambientLight intensity={Math.PI} />
-        {/* Lighting setup we refined previously */}
         <spotLight position={[3, 5, 3]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI / 3} />
         <spotLight position={[0, 2, 0]} angle={0.3} penumbra={0.5} decay={0} intensity={Math.PI / 2} />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         <Ring />
         <OrbitControls target={[0, 0.75, 0]} />
+        <SceneCapture />
       </Canvas>
     </div>
   );
