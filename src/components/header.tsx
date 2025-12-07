@@ -14,13 +14,22 @@ export function Header() {
         </Link>
         <nav className="flex items-center space-x-6">
           <div className="hidden md:flex items-center space-x-6">
-            <Link href="/" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
+            <Link
+              href="/"
+              className="text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+            >
               Home
             </Link>
-            <Link href="/collections" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
+            <Link
+              href="/collections"
+              className="text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+            >
               Collections
             </Link>
-            <Link href="/customizer" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
+            <Link
+              href="/customizer"
+              className="text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+            >
               Ring Customizer
             </Link>
           </div>

@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
@@ -8,7 +7,7 @@ import { useCustomizer } from "@/context/customizer-context";
 // Self-contained OvalCutGem with material logic
 function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
   let materialProps: any = {
-    color: color,
+    color,
     roughness: 0,
     transmission: 1,
     thickness: 2,
@@ -44,10 +43,16 @@ function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
 
   return (
     <group rotation={[Math.PI, 0, 0]} scale={[0.8, 1, 1.2]}>
-      <Cylinder args={[girdleRadius, girdleRadius, crownHeight, facets]} position={[0, crownHeight / 2, 0]}>
+      <Cylinder
+        args={[girdleRadius, girdleRadius, crownHeight, facets]}
+        position={[0, crownHeight / 2, 0]}
+      >
         <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
-      <Cylinder args={[girdleRadius, girdleRadius * 0.4, pavilionHeight, facets]} position={[0, -pavilionHeight / 2, 0]}>
+      <Cylinder
+        args={[girdleRadius, girdleRadius * 0.4, pavilionHeight, facets]}
+        position={[0, -pavilionHeight / 2, 0]}
+      >
         <meshPhysicalMaterial {...materialProps} />
       </Cylinder>
     </group>
@@ -75,7 +80,11 @@ function Ring() {
   return (
     <group position-y={0.11}>
       {/* Band */}
-      <Torus args={[1, 0.06, 32, 100]} rotation={[Math.PI / 2, Math.PI / 2, 0]} scale={[1, 1, 1.5]}>
+      <Torus
+        args={[1, 0.06, 32, 100]}
+        rotation={[Math.PI / 2, Math.PI / 2, 0]}
+        scale={[1, 1, 1.5]}
+      >
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Torus>
 
@@ -107,37 +116,16 @@ function Ring() {
 
 export function RingViewer() {
   const { setSelectedGem } = useCustomizer();
-  const canvasRef = useRef<HTMLDivElement | null>(null);
-
-  // Expose a capture function globally using the canvas DOM element directly
-  useEffect(() => {
-    const capture = () => {
-      const canvas = canvasRef.current?.querySelector("canvas");
-      if (!canvas) return null;
-      try {
-        return (canvas as HTMLCanvasElement).toDataURL("image/jpeg", 0.9);
-      } catch {
-        return null;
-      }
-    };
-
-    (window as any).captureRingImage = capture;
-
-    return () => {
-      delete (window as any).captureRingImage;
-    };
-  }, []);
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const gemDataString = e.dataTransfer.getData("application/json");
-    if (gemDataString) {
-      try {
-        const gem = JSON.parse(gemDataString);
-        setSelectedGem(gem);
-      } catch (error) {
-        console.error("Failed to parse dropped gem data:", error);
-      }
+    if (!gemDataString) return;
+    try {
+      const gem = JSON.parse(gemDataString);
+      setSelectedGem(gem);
+    } catch (error) {
+      console.error("Failed to parse dropped gem data:", error);
     }
   };
 
@@ -147,7 +135,6 @@ export function RingViewer() {
 
   return (
     <div
-      ref={canvasRef}
       className="w-full h-full bg-gray-200 dark:bg-gray-950"
       onDrop={handleDrop}
       onDragOver={handleDragOver}
