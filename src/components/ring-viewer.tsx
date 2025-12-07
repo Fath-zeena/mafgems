@@ -4,7 +4,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 
-// The OvalCutGem component is defined inside this file to prevent any import errors.
+// The OvalCutGem component is now defined inside this file to prevent any import errors.
 function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
   let materialProps: any = {
     color: color,
@@ -95,11 +95,11 @@ function Ring() {
 
 // Hook to capture the canvas image
 function SceneCapture() {
-  const { gl } = useThree();
+  const { gl, scene, camera } = useThree();
   
   const captureImage = () => {
-    // Force render before capture
-    gl.render();
+    // Force render before capture, passing scene and camera
+    gl.render(scene, camera);
     const dataURL = gl.domElement.toDataURL('image/jpeg', 0.9);
     return dataURL;
   };
