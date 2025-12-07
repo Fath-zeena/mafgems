@@ -3,6 +3,7 @@
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
+import { useEffect } from "react";
 
 // The OvalCutGem component is now defined inside this file to prevent any import errors.
 function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
@@ -98,14 +99,20 @@ function SceneCapture() {
   const { gl, scene, camera } = useThree();
   
   const captureImage = () => {
-    // Force render before capture, passing scene and camera
     gl.render(scene, camera);
     const dataURL = gl.domElement.toDataURL('image/jpeg', 0.9);
     return dataURL;
   };
 
-  // Expose capture function globally for the button to use
-  (window as any).captureRingImage = captureImage;
+  useEffect(() => {
+    // Expose capture function globally
+    (window as any).captureRingImage = captureImage;
+    
+    // Cleanup function: remove the global reference when the component unmounts
+    return () => {
+      delete (window as any).captureRingImage;
+    };
+  }, [gl, scene, camera]);
   
   return null;
 }
