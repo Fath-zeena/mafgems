@@ -1,11 +1,11 @@
 "use client";
 
-import { Canvas, useThree } from "@react-three/fiber";
+import { useRef, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
-import { useEffect } from "react";
 
-// The OvalCutGem component is now defined inside this file to prevent any import errors.
+// Self-contained OvalCutGem with material logic
 function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
   let materialProps: any = {
     color: color,
@@ -54,7 +54,7 @@ function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
   );
 }
 
-// The Ring component is also defined here.
+// Ring model
 function Ring() {
   const { selectedGem } = useCustomizer();
 
@@ -74,14 +74,25 @@ function Ring() {
 
   return (
     <group position-y={0.11}>
+      {/* Band */}
       <Torus args={[1, 0.06, 32, 100]} rotation={[Math.PI / 2, Math.PI / 2, 0]} scale={[1, 1, 1.5]}>
         <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
       </Torus>
+
+      {/* Crown & Gem */}
       <group rotation-y={Math.PI / 2}>
-        <Cylinder args={[crownBaseRadius, crownBaseRadius, crownBaseHeight, 64]} position={[0, crownBaseY, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
+        <Cylinder
+          args={[crownBaseRadius, crownBaseRadius, crownBaseHeight, 64]}
+          position={[0, crownBaseY, 0]}
+          scale={[crownBaseScaleX, 1, crownBaseScaleZ]}
+        >
           <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
         </Cylinder>
-        <Cylinder args={[crownBaseRadius, crownBaseRadius, wallHeight, 64]} position={[0, wallCenterY, 0]} scale={[crownBaseScaleX, 1, crownBaseScaleZ]}>
+        <Cylinder
+          args={[crownBaseRadius, crownBaseRadius, wallHeight, 64]}
+          position={[0, wallCenterY, 0]}
+          scale={[crownBaseScaleX, 1, crownBaseScaleZ]}
+        >
           <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
         </Cylinder>
         {selectedGem && (
@@ -94,32 +105,28 @@ function Ring() {
   );
 }
 
-// Hook to capture the canvas image
-function SceneCapture() {
-  const { gl, scene, camera } = useThree();
-  
-  const captureImage = () => {
-    gl.render(scene, camera);
-    const dataURL = gl.domElement.toDataURL('image/jpeg', 0.9);
-    return dataURL;
-  };
+export function RingViewer() {
+  const { setSelectedGem } = useCustomizer();
+  const canvasRef = useRef<HTMLDivElement | null>(null);
 
+  // Expose a capture function globally using the canvas DOM element directly
   useEffect(() => {
-    // Expose capture function globally
-    (window as any).captureRingImage = captureImage;
-    
-    // Cleanup function: remove the global reference when the component unmounts
+    const capture = () => {
+      const canvas = canvasRef.current?.querySelector("canvas");
+      if (!canvas) return null;
+      try {
+        return (canvas as HTMLCanvasElement).toDataURL("image/jpeg", 0.9);
+      } catch {
+        return null;
+      }
+    };
+
+    (window as any).captureRingImage = capture;
+
     return () => {
       delete (window as any).captureRingImage;
     };
-  }, [gl, scene, camera]);
-  
-  return null;
-}
-
-
-export function RingViewer() {
-  const { setSelectedGem } = useCustomizer();
+  }, []);
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -139,15 +146,35 @@ export function RingViewer() {
   };
 
   return (
-    <div className="w-full h-full bg-gray-200 dark:bg-gray-950" onDrop={handleDrop} onDragOver={handleDragOver}>
+    <div
+      ref={canvasRef}
+      className="w-full h-full bg-gray-200 dark:bg-gray-950"
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+    >
       <Canvas camera={{ position: [3, 2, 3], fov: 45 }}>
         <ambientLight intensity={Math.PI} />
-        <spotLight position={[3, 5, 3]} angle={0.7} penumbra={1} decay={0} intensity={Math.PI / 3} />
-        <spotLight position={[0, 2, 0]} angle={0.3} penumbra={0.5} decay={0} intensity={Math.PI / 2} />
-        <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
+        <spotLight
+          position={[3, 5, 3]}
+          angle={0.7}
+          penumbra={1}
+          decay={0}
+          intensity={Math.PI / 3}
+        />
+        <spotLight
+          position={[0, 2, 0]}
+          angle={0.3}
+          penumbra={0.5}
+          decay={0}
+          intensity={Math.PI / 2}
+        />
+        <pointLight
+          position={[-10, -10, -10]}
+          decay={0}
+          intensity={Math.PI}
+        />
         <Ring />
         <OrbitControls target={[0, 0.75, 0]} />
-        <SceneCapture />
       </Canvas>
     </div>
   );
