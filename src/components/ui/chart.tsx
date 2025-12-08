@@ -1,52 +1,84 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import * as RechartsPrimitive from "recharts";
 import { cn } from "@/lib/utils";
 
-// Define a simple type for the payload items expected by Recharts Tooltip/Legend
-type PayloadItem = {
-  name?: string;
+// Minimal payload shape for legend / tooltip items
+type LegendItem = {
+  value?: string;
   dataKey?: string;
   color?: string;
-  value?: any;
-  payload?: any;
 };
 
-// Define a simple type for the CustomLegend props
-type CustomLegendProps = React.ComponentProps<"div"> & {
-  payload?: PayloadItem[];
-  verticalAlign?: string;
+// Props for our safer custom legend
+type ChartLegendContentProps = React.ComponentProps<"div"> & {
+  payload?: LegendItem[];
   hideIcon?: boolean;
-  nameKey?: string;
-  valueKey?: string;
-  labelFormatter?: (value: any) => string;
+  labelFormatter?: (value: string | undefined) => string;
 };
 
-export function CustomLegend({
+// Props for tooltip coming from Recharts payload
+type ChartTooltipContentProps = {
+  active?: boolean;
+  payload?: {
+    name?: string;
+    dataKey?: string;
+    color?: string;
+    value?: any;
+    payload?: Record<string, any>;
+  }[];
+  label?: string | number;
+  labelFormatter?: (value: string | number | undefined) => string | number;
+};
+
+export const ChartContainer = RechartsPrimitive.ResponsiveContainer;
+export const ChartLegend = RechartsPrimitive.Legend;
+export const ChartTooltip = RechartsPrimitive.Tooltip;
+export const ChartArea = RechartsPrimitive.Area;
+export const ChartAreaChart = RechartsPrimitive.AreaChart;
+export const ChartBar = RechartsPrimitive.Bar;
+export const ChartBarChart = RechartsPrimitive.BarChart;
+export const ChartCartesianGrid = RechartsPrimitive.CartesianGrid;
+export const ChartLine = RechartsPrimitive.Line;
+export const ChartLineChart = RechartsPrimitive.LineChart;
+export const ChartPie = RechartsPrimitive.Pie;
+export const ChartPieChart = RechartsPrimitive.PieChart;
+export const ChartRadialBar = RechartsPrimitive.RadialBar;
+export const ChartRadialBarChart = RechartsPrimitive.RadialBarChart;
+export const ChartScatter = RechartsPrimitive.Scatter;
+export const ChartScatterChart = RechartsPrimitive.ScatterChart;
+export const ChartComposedChart = RechartsPrimitive.ComposedChart;
+export const ChartXAxis = RechartsPrimitive.XAxis;
+export const ChartYAxis = RechartsPrimitive.YAxis;
+
+// Custom Legend Content
+export function ChartLegendContent({
   payload,
   hideIcon = false,
-  nameKey,
   labelFormatter,
   className,
   ...props
-}: CustomLegendProps) {
-  const items: PayloadItem[] = Array.isArray(payload) ? payload : [];
-
-  if (!items.length) {
+}: ChartLegendContentProps) {
+  if (!payload?.length) {
     return null;
   }
 
   return (
     <div className={cn("grid gap-1.5", className)} {...props}>
-      {items.map((item, index) => {
-        const key = `${nameKey || item.name || item.dataKey || "value"}-${index}`;
-        const labelText = item.name || item.dataKey || "";
-        const formattedLabel = labelFormatter ? labelFormatter(labelText) : labelText;
+      {payload.map((item, index) => {
+        const labelValue = item.value ?? item.dataKey ?? "";
+        const formattedLabel = labelFormatter ? labelFormatter(labelValue) : labelValue;
+
         return (
-          <div key={key} className="flex items-center space-x-2">
-            {!hideIcon && <span className="w-3 h-3 rounded-full" style={{ background: item.color }} />}
-            <div className="text-sm text-gray-700">{formattedLabel}</div>
+          <div key={`${labelValue}-${index}`} className="flex items-center gap-2 text-sm text-muted-foreground">
+            {!hideIcon && (
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{ background: item.color ?? "var(--primary)" }}
+              />
+            )}
+            <span>{formattedLabel}</span>
           </div>
         );
       })}
@@ -54,57 +86,33 @@ export function CustomLegend({
   );
 }
 
-// Tooltip Content Component (Simplified)
-type CustomTooltipProps = {
-  active?: boolean;
-  payload?: PayloadItem[];
-  label?: string | number;
-  labelFormatter?: (value: any) => string;
-  nameKey?: string;
-};
-
-export function CustomTooltip({ active, payload, label, labelFormatter, nameKey }: CustomTooltipProps) {
-  if (active && payload && payload.length) {
-    const formattedLabel = labelFormatter ? labelFormatter(label) : label;
-    return (
-      <div className="rounded-lg border bg-background p-2 shadow-md">
-        <p className="text-sm font-medium text-foreground">{formattedLabel}</p>
-        <div className="grid gap-1.5">
-          {payload.map((item, index) => {
-            const key = `${nameKey || item.name || item.dataKey || "value"}-${index}`;
-            const value = item.value ?? item.payload?.value ?? "-";
-            return (
-              <div key={key} className="flex items-center gap-2 text-xs text-muted-foreground">
-                <div className="w-2 h-2 rounded-sm" style={{ background: item.color }} />
-                {item.name}: {value}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
+// Custom Tooltip Content
+export function ChartTooltipContent({
+  active,
+  payload,
+  label,
+  labelFormatter,
+}: ChartTooltipContentProps) {
+  if (!active || !payload?.length) {
+    return null;
   }
-  return null;
+
+  const formattedLabel = labelFormatter ? labelFormatter(label) : label;
+
+  return (
+    <div className="rounded-lg border bg-background/90 px-3 py-2 text-sm shadow-md">
+      <p className="mb-1 font-semibold text-foreground">{formattedLabel}</p>
+      <div className="grid gap-1">
+        {payload.map((item, index) => (
+          <div key={`${item.dataKey ?? index}`} className="flex items-center gap-2 text-muted-foreground">
+            <span className="h-2 w-2 rounded-full" style={{ background: item.color ?? "var(--primary)" }} />
+            <span>{item.name ?? item.dataKey ?? "-"}</span>
+            <span className="font-medium text-foreground">
+              {item.value ?? item.payload?.value ?? "-"}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-
-// Exporting the main components
-export const ChartContainer = RechartsPrimitive.ResponsiveContainer;
-export const ChartTooltip = RechartsPrimitive.Tooltip;
-export const ChartLegend = RechartsPrimitive.Legend;
-export const ChartXAxis = RechartsPrimitive.XAxis;
-export const ChartYAxis = RechartsPrimitive.YAxis;
-export const ChartBar = RechartsPrimitive.Bar;
-export const ChartLine = RechartsPrimitive.Line;
-export const ChartArea = RechartsPrimitive.Area;
-export const ChartScatter = RechartsPrimitive.Scatter;
-export const ChartPie = RechartsPrimitive.Pie;
-export const ChartRadialBar = RechartsPrimitive.RadialBar;
-export const ChartComposedChart = RechartsPrimitive.ComposedChart;
-export const ChartLineChart = RechartsPrimitive.LineChart;
-export const ChartBarChart = RechartsPrimitive.BarChart;
-export const ChartAreaChart = RechartsPrimitive.AreaChart;
-export const ChartScatterChart = RechartsPrimitive.ScatterChart;
-export const ChartPieChart = RechartsPrimitive.PieChart;
-export const ChartRadialBarChart = RechartsPrimitive.RadialBarChart;
-
-export default CustomLegend;
