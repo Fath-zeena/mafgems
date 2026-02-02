@@ -14,24 +14,29 @@ export default function ProductDetailPage() {
   const { id } = params;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
     if (!id) return;
     const fetchProduct = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", id)
-        .single();
+      try {
+        setLoading(true);
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", id)
+          .single();
       
-      if (error) {
-        console.error("Error fetching product:", error);
-      } else {
-        setProduct(data as Product);
+        if (error) {
+          console.error("Error fetching product:", error);
+        } else {
+          setProduct(data as Product);
+        }
+      } catch (err) {
+        console.error("Error in fetchProduct:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchProduct();
   }, [id]);

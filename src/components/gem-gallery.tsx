@@ -14,19 +14,24 @@ export function GemGallery() {
   const { selectedGem, setSelectedGem } = useCustomizer();
   const [gems, setGems] = useState<Gem[]>([]);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
     const fetchGems = async () => {
-      setLoading(true);
-      const { data, error } = await supabase.from("gems").select("*");
+      try {
+        setLoading(true);
+        const supabase = createClient();
+        const { data, error } = await supabase.from("gems").select("*");
 
-      if (error) {
-        console.error("Error fetching gems:", error);
-      } else {
-        setGems(data as Gem[]);
+        if (error) {
+          console.error("Error fetching gems:", error);
+        } else {
+          setGems(data as Gem[]);
+        }
+      } catch (err) {
+        console.error("Error in fetchGems:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchGems();
