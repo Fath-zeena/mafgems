@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 
-// Self-contained OvalCutGem with material logic
+// Self-contained OvalCutGem with material logic for different gem types
 function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
   let materialProps: any = {
     color,
@@ -15,24 +15,160 @@ function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
     reflectivity: 1,
   };
 
+  // Gem-specific rendering properties
   if (gemName === "Diamond") {
     materialProps = {
-      ...materialProps,
       color: "#F0F0F0",
-      roughness: 0.1,
+      roughness: 0.05,
+      transmission: 1,
+      thickness: 3,
+      ior: 2.417,
+      clearcoat: 1,
+      clearcoatRoughness: 0,
+      sheen: 0,
+    };
+  } else if (gemName === "Ruby") {
+    materialProps = {
+      color: "#E0115F",
+      roughness: 0.15,
       transmission: 0.9,
+      thickness: 1.5,
+      ior: 1.762,
+      clearcoat: 0.8,
+      sheen: 1,
+      sheenColor: "#FF0000",
+    };
+  } else if (gemName === "Sapphire") {
+    materialProps = {
+      color: "#0F52BA",
+      roughness: 0.12,
+      transmission: 0.95,
+      thickness: 2,
+      ior: 1.762,
+      clearcoat: 0.9,
+      sheenColor: "#1E90FF",
+    };
+  } else if (gemName === "Emerald") {
+    materialProps = {
+      color: "#50C878",
+      roughness: 0.2,
+      transmission: 0.85,
+      thickness: 1.8,
+      ior: 1.576,
+      clearcoat: 0.6,
+    };
+  } else if (gemName === "Amethyst") {
+    materialProps = {
+      color: "#9966CC",
+      roughness: 0.18,
+      transmission: 0.88,
+      thickness: 1.6,
+      ior: 1.544,
+      clearcoat: 0.7,
+    };
+  } else if (gemName === "Topaz") {
+    materialProps = {
+      color: "#FFC87C",
+      roughness: 0.16,
+      transmission: 0.92,
+      thickness: 1.7,
+      ior: 1.609,
+      clearcoat: 0.8,
+      sheen: 0.5,
+    };
+  } else if (gemName === "Pearl") {
+    materialProps = {
+      color: "#F0F0F0",
+      roughness: 0.3,
+      transmission: 0.2,
+      thickness: 0.5,
+      ior: 1.33,
       clearcoat: 0.5,
-      clearcoatRoughness: 0.1,
+      sheen: 1,
+      sheenColor: "#FFE4B5",
+    };
+  } else if (gemName === "Opal") {
+    materialProps = {
+      color: "#A9A9A9",
+      roughness: 0.25,
+      transmission: 0.5,
+      thickness: 1,
+      ior: 1.45,
+      clearcoat: 0.4,
+      iridescence: 0.5,
     };
   } else if (gemName === "Alexandrite") {
     materialProps = {
-      ...materialProps,
       color: "#6A0DAD",
+      roughness: 0.14,
+      transmission: 0.9,
+      thickness: 1.8,
+      ior: 1.746,
       clearcoat: 1,
       clearcoatRoughness: 0.1,
       sheen: 1,
       sheenColor: "#00CED1",
-      transmission: 0.8,
+    };
+  } else if (gemName === "Aquamarine") {
+    materialProps = {
+      color: "#7FFFD4",
+      roughness: 0.13,
+      transmission: 0.93,
+      thickness: 2.1,
+      ior: 1.577,
+      clearcoat: 0.85,
+      sheen: 0.3,
+    };
+  } else if (gemName === "Garnet") {
+    materialProps = {
+      color: "#922B3E",
+      roughness: 0.17,
+      transmission: 0.87,
+      thickness: 1.5,
+      ior: 1.79,
+      clearcoat: 0.75,
+      sheen: 0.8,
+    };
+  } else if (gemName === "Citrine") {
+    materialProps = {
+      color: "#E06377",
+      roughness: 0.16,
+      transmission: 0.91,
+      thickness: 1.9,
+      ior: 1.544,
+      clearcoat: 0.8,
+      sheen: 0.4,
+    };
+  } else if (gemName === "Morganite") {
+    materialProps = {
+      color: "#FF99CC",
+      roughness: 0.15,
+      transmission: 0.89,
+      thickness: 1.7,
+      ior: 1.58,
+      clearcoat: 0.75,
+      sheen: 0.5,
+      sheenColor: "#FFB6C1",
+    };
+  } else if (gemName === "Tanzanite") {
+    materialProps = {
+      color: "#0047AB",
+      roughness: 0.14,
+      transmission: 0.92,
+      thickness: 2,
+      ior: 1.69,
+      clearcoat: 0.85,
+      sheen: 0.4,
+    };
+  } else if (gemName === "Peridot") {
+    materialProps = {
+      color: "#E8FF00",
+      roughness: 0.17,
+      transmission: 0.90,
+      thickness: 1.8,
+      ior: 1.654,
+      clearcoat: 0.7,
+      sheen: 0.3,
     };
   }
 
@@ -61,7 +197,18 @@ function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
 
 // Ring model
 function Ring() {
-  const { selectedGem } = useCustomizer();
+  const { selectedGem, metalColor } = useCustomizer();
+
+  // Metal color mapping
+  const metalColorMap: { [key: string]: { color: string; metalness: number; roughness: number } } = {
+    yellow_gold: { color: "#FFD700", metalness: 0.8, roughness: 0.2 },
+    white_gold: { color: "#F5F5F5", metalness: 0.85, roughness: 0.15 },
+    rose_gold: { color: "#F8B4D6", metalness: 0.8, roughness: 0.2 },
+    platinum: { color: "#E8E8E8", metalness: 0.9, roughness: 0.1 },
+    silver: { color: "#C0C0C0", metalness: 0.85, roughness: 0.2 },
+  };
+
+  const metalMaterial = metalColorMap[metalColor];
 
   const crownBaseY = 1.1;
   const crownBaseHeight = 0.08;
@@ -85,7 +232,11 @@ function Ring() {
         rotation={[Math.PI / 2, Math.PI / 2, 0]}
         scale={[1, 1, 1.5]}
       >
-        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+        <meshStandardMaterial
+          color={metalMaterial.color}
+          metalness={metalMaterial.metalness}
+          roughness={metalMaterial.roughness}
+        />
       </Torus>
 
       {/* Crown & Gem */}
@@ -95,14 +246,22 @@ function Ring() {
           position={[0, crownBaseY, 0]}
           scale={[crownBaseScaleX, 1, crownBaseScaleZ]}
         >
-          <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+          <meshStandardMaterial
+            color={metalMaterial.color}
+            metalness={metalMaterial.metalness}
+            roughness={metalMaterial.roughness}
+          />
         </Cylinder>
         <Cylinder
           args={[crownBaseRadius, crownBaseRadius, wallHeight, 64]}
           position={[0, wallCenterY, 0]}
           scale={[crownBaseScaleX, 1, crownBaseScaleZ]}
         >
-          <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+          <meshStandardMaterial
+            color={metalMaterial.color}
+            metalness={metalMaterial.metalness}
+            roughness={metalMaterial.roughness}
+          />
         </Cylinder>
         {selectedGem && (
           <group position={[0, gemPositionY, 0]}>

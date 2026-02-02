@@ -8,6 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Video } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const DynamicRingViewer = dynamic(
   () => import("@/components/ring-viewer").then((mod) => mod.RingViewer),
@@ -18,7 +25,7 @@ const DynamicRingViewer = dynamic(
 );
 
 function CustomizerInner() {
-  const { selectedGem } = useCustomizer();
+  const { selectedGem, metalColor, setMetalColor } = useCustomizer();
   const [loading, setLoading] = useState(false);
   const [videoId, setVideoId] = useState<string | null>(null);
 
@@ -63,6 +70,21 @@ function CustomizerInner() {
       <aside className="w-full md:w-80 lg:w-96 md:h-auto p-4 overflow-y-auto border-b md:border-b-0 md:border-r border-border">
         <h1 className="text-2xl font-bold mb-4">Jewelry Customizer</h1>
         <div className="mb-6">
+          <div className="mb-4">
+            <label className="text-sm font-medium mb-2 block">Metal Type</label>
+            <Select value={metalColor} onValueChange={(value: any) => setMetalColor(value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="yellow_gold">Yellow Gold</SelectItem>
+                <SelectItem value="white_gold">White Gold</SelectItem>
+                <SelectItem value="rose_gold">Rose Gold</SelectItem>
+                <SelectItem value="platinum">Platinum</SelectItem>
+                <SelectItem value="silver">Silver</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Button
             onClick={handleGeneratePresentation}
             disabled={loading || !selectedGem}
