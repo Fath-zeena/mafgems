@@ -6,7 +6,13 @@ import axios from 'axios';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const HEYGEN_API_KEY = process.env.HEYGEN_API_KEY;
 
-const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+// Initialize OpenAI only when needed to avoid build-time errors
+const getOpenAI = () => {
+  if (!OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY is not configured');
+  }
+  return new OpenAI({ apiKey: OPENAI_API_KEY });
+};
 
 // Placeholder for a HeyGen template ID you would create in their studio
 const HEYGEN_TEMPLATE_ID = "YOUR_HEYGEN_TEMPLATE_ID"; 
@@ -19,6 +25,7 @@ export async function POST(request: Request) {
 
   try {
     const { gemName, metalColor, imageUrl } = await request.json();
+    const openai = getOpenAI();
 
     // 1. AI Brain: Generate the script using OpenAI
     const prompt = `You are a luxury jewelry concierge for MAFGEMS. Write a short, elegant, 20-second script (max 50 words) to present a custom piece of jewelry. The piece is a ${gemName} set in ${metalColor} gold. Focus on the luxury and timelessness of the design.`;
