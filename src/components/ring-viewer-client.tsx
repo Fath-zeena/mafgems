@@ -279,6 +279,11 @@ function Ring() {
 export const RingViewerCanvas = memo(function RingViewerCanvasComponent() {
   const { setSelectedGem } = useCustomizer();
 
+  // Safety guard: never render during SSR
+  if (typeof window === "undefined") {
+    return null;
+  }
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const gemDataString = e.dataTransfer.getData("application/json");
