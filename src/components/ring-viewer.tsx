@@ -1,16 +1,11 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 
-// Dynamically import the client-only Canvas component with ssr: false
-const RingViewerCanvas = dynamic(
-  () => import("@/components/ring-viewer-client").then((mod) => mod.RingViewerCanvas),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="w-full h-full" />,
-  }
+// Lazy load the Canvas component - don't evaluate until needed
+const RingViewerCanvas = lazy(() => 
+  import("@/components/ring-viewer-client").then((mod) => ({ default: mod.RingViewerCanvas }))
 );
 
 export function RingViewer() {
@@ -20,9 +15,13 @@ export function RingViewer() {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
+  if (!mounted || typeof window === "undefined") {
     return <Skeleton className="w-full h-full" />;
   }
 
-  return <RingViewerCanvas />;
+  return (
+    <Suspense fallback={<Skeleton className="w-full h-full" />}>
+      <RingViewerCanvas />
+    </Suspense>
+  );
 }
