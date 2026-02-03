@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Cylinder } from "@react-three/drei";
+import { OrbitControls, Cylinder, Torus, Environment, ContactShadows, Center } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
 import { memo } from "react";
 
@@ -201,73 +201,62 @@ function Ring() {
   const metalColorMap: Record<string, any> = {
     yellow_gold: {
       color: "#FFD700",
-      metalness: 0.8,
-      roughness: 0.2,
-    },
-    white_gold: {
-      color: "#F5F5F5",
-      metalness: 0.85,
-      roughness: 0.15,
-    },
-    rose_gold: {
-      color: "#B76E79",
-      metalness: 0.8,
-      roughness: 0.2,
-    },
-    platinum: {
-      color: "#E8E8E8",
       metalness: 0.9,
       roughness: 0.1,
     },
+    white_gold: {
+      color: "#F9F9F9",
+      metalness: 0.95,
+      roughness: 0.1,
+    },
+    rose_gold: {
+      color: "#B76E79",
+      metalness: 0.9,
+      roughness: 0.1,
+    },
+    platinum: {
+      color: "#E5E4E2",
+      metalness: 0.95,
+      roughness: 0.05,
+    },
     silver: {
       color: "#C0C0C0",
-      metalness: 0.75,
-      roughness: 0.25,
+      metalness: 0.8,
+      roughness: 0.2,
     },
   };
 
   const metalMaterial = metalColorMap[metalColor] || metalColorMap.white_gold;
 
-  const ringRadius = 1;
-  const bandWidth = 0.15;
-  const bandHeight = 0.08;
-
-  const baseRadius = ringRadius - bandWidth / 2;
-  const crownBaseRadius = baseRadius;
-  const crownBaseScaleX = 1;
-  const crownBaseScaleZ = 1.3;
-  const crownHeight = 0.3;
-  const crownBaseScaleY = 1;
-  const wallHeight = bandHeight;
-  const wallCenterY = 0;
-  const gemPositionY = crownHeight / 2 + 0.05;
-
   return (
     <group>
       <group>
-        <Cylinder
-          args={[baseRadius, baseRadius, bandHeight, 64]}
-          position={[0, wallCenterY, 0]}
-        >
+        {/* Ring Band: Torus Geometry */}
+        <Torus args={[1, 0.1, 64, 100]}>
           <meshStandardMaterial
             color={metalMaterial.color}
             metalness={metalMaterial.metalness}
             roughness={metalMaterial.roughness}
+            envMapIntensity={1}
           />
-        </Cylinder>
-        <Cylinder
-          args={[crownBaseRadius, crownBaseRadius, wallHeight, 64]}
-          position={[0, wallCenterY, 0]}
-          scale={[crownBaseScaleX, 1, crownBaseScaleZ]}
-        >
+        </Torus>
+      </group>
+
+      {/* Gem Setting - Scaled Up and position adjusted */}
+      <group position={[0, 1.45, 0]} scale={[1.5, 1.5, 1.5]}>
+        {/* Bezel/Prongs base - Oval Shape - Height Reduced - Base Slightly Larger */}
+        <Cylinder args={[0.365, 0.2, 0.2, 32]} position={[0, -0.3, 0]} scale={[0.8, 1, 1.2]}>
           <meshStandardMaterial
             color={metalMaterial.color}
             metalness={metalMaterial.metalness}
             roughness={metalMaterial.roughness}
+            envMapIntensity={1}
           />
         </Cylinder>
+        
+        {/* The Gem - Lowered further to close gap */}
         {selectedGem && (
-          <group position={[0, gemPositionY, 0]}>
+          <group position={[0, -0.19, 0]} scale={[0.62, 0.62, 0.62]}>
             <OvalCutGem color={selectedGem.color} gemName={selectedGem.name} />
           </group>
         )}
@@ -306,29 +295,22 @@ export const RingViewerCanvas = memo(function RingViewerCanvasComponent() {
       onDrop={handleDrop}
       onDragOver={handleDragOver}
     >
-      <Canvas camera={{ position: [3, 2, 3], fov: 45 }}>
-        <ambientLight intensity={Math.PI} />
+      <Canvas shadows camera={{ position: [4, 4, 4], fov: 45 }}>
+        <Environment preset="city" />
+        <ambientLight intensity={0.5} />
         <spotLight
-          position={[3, 5, 3]}
-          angle={0.7}
+          position={[10, 10, 10]}
+          angle={0.15}
           penumbra={1}
           decay={0}
-          intensity={Math.PI / 3}
-        />
-        <spotLight
-          position={[0, 2, 0]}
-          angle={0.3}
-          penumbra={0.5}
-          decay={0}
-          intensity={Math.PI / 2}
-        />
-        <pointLight
-          position={[-10, -10, -10]}
-          decay={0}
           intensity={Math.PI}
+          castShadow
         />
-        <Ring />
-        <OrbitControls target={[0, 0.75, 0]} />
+        <Center position={[0, 0, 0]}>
+          <Ring />
+        </Center>
+        <ContactShadows resolution={1024} scale={10} blur={2} opacity={0.5} far={10} color="#333" />
+        <OrbitControls makeDefault minPolarAngle={0} maxPolarAngle={Math.PI / 1.8} />
       </Canvas>
     </div>
   );
