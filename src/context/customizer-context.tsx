@@ -4,12 +4,15 @@ import { createContext, useContext, useState, ReactNode } from "react";
 import type { Gem } from "@/types";
 
 export type MetalType = "yellow_gold" | "white_gold" | "rose_gold" | "platinum" | "silver";
+export type JewelryType = "ring" | "necklace" | "bracelet" | "earrings";
 
 interface CustomizerContextType {
   selectedGem: Gem | null;
   setSelectedGem: (gem: Gem | null) => void;
   metalColor: MetalType;
   setMetalColor: (metal: MetalType) => void;
+  jewelryType: JewelryType;
+  setJewelryType: (type: JewelryType) => void;
 }
 
 const CustomizerContext = createContext<CustomizerContextType | undefined>(
@@ -19,9 +22,19 @@ const CustomizerContext = createContext<CustomizerContextType | undefined>(
 export function CustomizerProvider({ children }: { children: ReactNode }) {
   const [selectedGem, setSelectedGem] = useState<Gem | null>(null);
   const [metalColor, setMetalColor] = useState<MetalType>("yellow_gold");
+  const [jewelryType, setJewelryType] = useState<JewelryType>("ring");
 
   return (
-    <CustomizerContext.Provider value={{ selectedGem, setSelectedGem, metalColor, setMetalColor }}>
+    <CustomizerContext.Provider 
+      value={{ 
+        selectedGem, 
+        setSelectedGem, 
+        metalColor, 
+        setMetalColor,
+        jewelryType,
+        setJewelryType
+      }}
+    >
       {children}
     </CustomizerContext.Provider>
   );
