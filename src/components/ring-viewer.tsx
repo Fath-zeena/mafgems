@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect, useState } from "react";
 
 // Dynamically import client-only Canvas component; disable SSR
 const RingViewerCanvas = dynamic(
@@ -13,5 +14,15 @@ const RingViewerCanvas = dynamic(
 );
 
 export function RingViewer() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <Skeleton className="w-full h-full" />;
+  }
+
   return <RingViewerCanvas />;
 }
