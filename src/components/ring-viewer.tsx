@@ -3,6 +3,7 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Torus, Cylinder } from "@react-three/drei";
 import { useCustomizer } from "@/context/customizer-context";
+import { useEffect, useState } from "react";
 
 // Self-contained OvalCutGem with material logic for different gem types
 function OvalCutGem({ color, gemName }: { color: string; gemName?: string }) {
@@ -275,6 +276,11 @@ function Ring() {
 
 export function RingViewer() {
   const { setSelectedGem } = useCustomizer();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -291,6 +297,10 @@ export function RingViewer() {
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
+
+  if (!isClient) {
+    return <div className="w-full h-full bg-gray-200 dark:bg-gray-950" />;
+  }
 
   return (
     <div
