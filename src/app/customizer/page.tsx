@@ -96,21 +96,6 @@ function CustomizerInner() {
               </SelectContent>
             </Select>
           </div>
-          <div className="mb-4">
-            <label className="text-sm font-medium mb-2 block">Metal Type</label>
-            <Select value={metalColor} onValueChange={(value: any) => setMetalColor(value)}>
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="yellow_gold">Yellow Gold</SelectItem>
-                <SelectItem value="white_gold">White Gold</SelectItem>
-                <SelectItem value="rose_gold">Rose Gold</SelectItem>
-                <SelectItem value="platinum">Platinum</SelectItem>
-                <SelectItem value="silver">Silver</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
           <Button
             onClick={handleGeneratePresentation}
             disabled={loading || !selectedGem}
@@ -146,8 +131,25 @@ function CustomizerInner() {
         </div>
         <GemGallery />
       </aside>
-      <main className="flex-1 h-[320px] md:h-auto md:min-h-[480px]">
-        <DynamicRingViewer />
+      <main className="flex-1 h-[320px] md:h-auto md:min-h-[480px] flex flex-col">
+        <div className="p-4 border-b border-border bg-background">
+          <label className="text-sm font-medium mb-2 block">Metal Type</label>
+          <Select value={metalColor} onValueChange={(value: any) => setMetalColor(value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="yellow_gold">Yellow Gold</SelectItem>
+              <SelectItem value="white_gold">White Gold</SelectItem>
+              <SelectItem value="rose_gold">Rose Gold</SelectItem>
+              <SelectItem value="platinum">Platinum</SelectItem>
+              <SelectItem value="silver">Silver</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex-1">
+          <DynamicRingViewer />
+        </div>
       </main>
     </div>
   );
