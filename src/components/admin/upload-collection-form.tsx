@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { Loader2, Plus, X, Upload } from "lucide-react";
 import Image from "next/image";
 
-export function UploadCollectionForm({ onSuccess }: { onSuccess: () => void }) {
+export function UploadCollectionForm({ onSuccess, setOpen }: { onSuccess: () => void, setOpen?: (open: boolean) => void }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -76,6 +76,7 @@ export function UploadCollectionForm({ onSuccess }: { onSuccess: () => void }) {
       setPrice("");
       setFiles([]);
       onSuccess();
+      if (setOpen) setOpen(false);
     } catch (error: any) {
       console.error(error);
       toast.error(error.message || "Failed to upload collection");
@@ -83,13 +84,10 @@ export function UploadCollectionForm({ onSuccess }: { onSuccess: () => void }) {
       setUploading(false);
     }
   };
-
+    
+  // Return just the form content, not the Card wrapper, to fit in Dialog better
   return (
-    <Card className="mb-8">
-      <CardHeader>
-        <CardTitle>Add New Collection</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="py-4">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
@@ -184,7 +182,6 @@ export function UploadCollectionForm({ onSuccess }: { onSuccess: () => void }) {
             )}
           </Button>
         </form>
-      </CardContent>
-    </Card>
+    </div>
   );
 }

@@ -15,11 +15,24 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Plus, Video } from "lucide-react";
+import { VideoGeneratorModal } from "./_components/video-generator-modal";
 
 export default function CollectionsPage() {
   const [user, setUser] = useState<any>(null);
   const [collections, setCollections] = useState<CollectionItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [selectedCollection, setSelectedCollection] = useState<CollectionItem | null>(null);
   const supabase = createClient();
 
   const fetchData = async () => {
@@ -83,10 +96,48 @@ export default function CollectionsPage() {
       </p>
 
       {user && (
-        <div className="mb-12 border-b pb-12">
-          <UploadCollectionForm onSuccess={fetchData} />
+        <div className="mb-12 flex justify-end gap-3">
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add New Collection
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Add New Collection</DialogTitle>
+                <DialogDescription>
+                  Upload a new collection of jewelry items.
+                </DialogDescription>
+              </DialogHeader>
+               <UploadCollectionForm onSuccess={fetchData} setOpen={setOpen} />
+            </DialogContent>
+          </Dialog>
+
+          <Button
+            onClick={() => {
+              setSelectedCollection(null);
+              setVideoModalOpen(true);
+            }}
+            variant="secondary"
+            className="gap-2"
+          >
+            <Video className="h-4 w-4" />
+            Generate Instagram Video
+          </Button>
         </div>
       )}
+
+      <VideoGeneratorModal
+        isOpen={videoModalOpen}
+        onClose={() => setVideoModalOpen(false)}
+        collectionTitle={selectedCollection?.title || "Custom Jewelry"}
+        onVideoGenerated={(videoUrl, videoData) => {
+          console.log("Video generated:", videoData);
+          // Optionally save video metadata to database or display success
+        }}
+      />
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -145,7 +196,22 @@ export default function CollectionsPage() {
                       Starting from ${collection.price.toLocaleString()}
                     </p>
                   )}
-                  <Button className="mt-4">View Full Collection</Button>
+                  <div className="flex gap-3 mt-4">
+                    <Button className="flex-1">View Full Collection</Button>
+                    {user && (
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedCollection(collection);
+                          setVideoModalOpen(true);
+                        }}
+                        className="gap-2"
+                      >
+                        <Video className="h-4 w-4" />
+                        Generate Video
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
