@@ -19,8 +19,10 @@ export function Header() {
 
           {/* Right-side icons */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <User className="h-5 w-5 text-gray-600" />
+            <Button variant="ghost" size="icon" className="rounded-full" asChild>
+              <Link href="/auth">
+                <User className="h-5 w-5 text-gray-600" />
+              </Link>
             </Button>
           </div>
         </div>

@@ -12,3 +12,12 @@ export interface Product {
   price: number;
   image_url: string;
 }
+
+export interface CollectionItem {
+  id: string;
+  created_at: string;
+  title: string;
+  description: string;
+  price: number;
+  image_urls: string[];
+}
