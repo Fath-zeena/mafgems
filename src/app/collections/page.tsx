@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { UploadCollectionForm } from "@/components/admin/upload-collection-form";
+import { JewelryVideoGenerator } from "@/components/admin/jewelry-video-generator";
 import { CollectionItem } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Carousel,
   CarouselContent,
@@ -24,15 +26,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus, Video } from "lucide-react";
-import { VideoGeneratorModal } from "./_components/video-generator-modal";
 
 export default function CollectionsPage() {
   const [user, setUser] = useState<any>(null);
   const [collections, setCollections] = useState<CollectionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
-  const [selectedCollection, setSelectedCollection] = useState<CollectionItem | null>(null);
+  const [activeTab, setActiveTab] = useState("collections");
   const supabase = createClient();
 
   const fetchData = async () => {
@@ -90,133 +90,184 @@ export default function CollectionsPage() {
         )}
       </div>
 
-      <p className="text-gray-700 max-w-2xl mb-8">
+      <p className="text-gray-700 max-w-2xl mb-12">
         Discover signature collections crafted over 40 years of MAFGEMS heritage.
         Each piece tells a unique story of elegance and precision.
       </p>
 
       {user && (
-        <div className="mb-12 flex justify-end gap-3">
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" />
-                Add New Collection
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Add New Collection</DialogTitle>
-                <DialogDescription>
-                  Upload a new collection of jewelry items.
-                </DialogDescription>
-              </DialogHeader>
-               <UploadCollectionForm onSuccess={fetchData} setOpen={setOpen} />
-            </DialogContent>
-          </Dialog>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
+            <TabsTrigger value="collections" className="gap-2">
+              <Plus className="h-4 w-4" />
+              Collections
+            </TabsTrigger>
+            <TabsTrigger value="videos" className="gap-2">
+              <Video className="h-4 w-4" />
+              Videos
+            </TabsTrigger>
+          </TabsList>
 
-          <Button
-            onClick={() => {
-              setSelectedCollection(null);
-              setVideoModalOpen(true);
-            }}
-            variant="secondary"
-            className="gap-2"
-          >
-            <Video className="h-4 w-4" />
-            Generate Instagram Video
-          </Button>
-        </div>
+          <TabsContent value="collections" className="space-y-4">
+            <div className="mb-8 flex justify-end">
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button className="gap-2">
+                    <Plus className="h-4 w-4" />
+                    Add New Collection
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Add New Collection</DialogTitle>
+                    <DialogDescription>
+                      Upload a new collection of jewelry items.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <UploadCollectionForm onSuccess={fetchData} setOpen={setOpen} />
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="space-y-4">
+                    <Skeleton className="h-64 w-full rounded-xl" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ) : collections.length === 0 ? (
+              <div className="text-center py-20 bg-gray-50 rounded-lg">
+                <p className="text-gray-500">No collections found yet.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-16">
+                {collections.map((collection) => (
+                  <div key={collection.id} className="group">
+                    <div className="grid md:grid-cols-2 gap-8 items-center">
+                      {/* Images Carousel */}
+                      <div className="w-full">
+                        <Carousel className="w-full">
+                          <CarouselContent>
+                            {collection.image_urls && collection.image_urls.map((url, idx) => (
+                              <CarouselItem key={idx}>
+                                <div className="p-1">
+                                  <Card className="border-0 shadow-none">
+                                    <CardContent className="flex aspect-square items-center justify-center p-0 overflow-hidden rounded-xl bg-gray-100">
+                                      <img
+                                        src={url}
+                                        alt={`${collection.title} - ${idx + 1}`}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                      />
+                                    </CardContent>
+                                  </Card>
+                                </div>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          <CarouselPrevious className="left-2" />
+                          <CarouselNext className="right-2" />
+                        </Carousel>
+                      </div>
+
+                      {/* Details */}
+                      <div className="space-y-4">
+                        <h2 className="text-2xl font-serif font-bold text-gray-900">
+                          {collection.title}
+                        </h2>
+                        <p className="text-gray-600 leading-relaxed">
+                          {collection.description}
+                        </p>
+                        {collection.price > 0 && (
+                          <p className="text-xl font-medium text-gray-900">
+                            Starting from ${collection.price.toLocaleString()}
+                          </p>
+                        )}
+                        <Button className="mt-4">View Full Collection</Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="videos" className="space-y-4">
+            <JewelryVideoGenerator />
+          </TabsContent>
+        </Tabs>
       )}
 
-      <VideoGeneratorModal
-        isOpen={videoModalOpen}
-        onClose={() => setVideoModalOpen(false)}
-        collectionTitle={selectedCollection?.title || "Custom Jewelry"}
-        onVideoGenerated={(videoUrl, videoData) => {
-          console.log("Video generated:", videoData);
-          // Optionally save video metadata to database or display success
-        }}
-      />
-
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="space-y-4">
-              <Skeleton className="h-64 w-full rounded-xl" />
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-            </div>
-          ))}
-        </div>
-      ) : collections.length === 0 ? (
-        <div className="text-center py-20 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">No collections found yet.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-16">
-          {collections.map((collection) => (
-            <div key={collection.id} className="group">
-              <div className="grid md:grid-cols-2 gap-8 items-center">
-                {/* Images Carousel */}
-                <div className="w-full">
-                  <Carousel className="w-full">
-                    <CarouselContent>
-                      {collection.image_urls && collection.image_urls.map((url, idx) => (
-                        <CarouselItem key={idx}>
-                          <div className="p-1">
-                            <Card className="border-0 shadow-none">
-                              <CardContent className="flex aspect-square items-center justify-center p-0 overflow-hidden rounded-xl bg-gray-100">
-                                <img
-                                  src={url}
-                                  alt={`${collection.title} - ${idx + 1}`}
-                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                />
-                              </CardContent>
-                            </Card>
-                          </div>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="left-2" />
-                    <CarouselNext className="right-2" />
-                  </Carousel>
+      {!user && (
+        <>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="space-y-4">
+                  <Skeleton className="h-64 w-full rounded-xl" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
                 </div>
+              ))}
+            </div>
+          ) : collections.length === 0 ? (
+            <div className="text-center py-20 bg-gray-50 rounded-lg">
+              <p className="text-gray-500">No collections available.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-16">
+              {collections.map((collection) => (
+                <div key={collection.id} className="group">
+                  <div className="grid md:grid-cols-2 gap-8 items-center">
+                    {/* Images Carousel */}
+                    <div className="w-full">
+                      <Carousel className="w-full">
+                        <CarouselContent>
+                          {collection.image_urls && collection.image_urls.map((url, idx) => (
+                            <CarouselItem key={idx}>
+                              <div className="p-1">
+                                <Card className="border-0 shadow-none">
+                                  <CardContent className="flex aspect-square items-center justify-center p-0 overflow-hidden rounded-xl bg-gray-100">
+                                    <img
+                                      src={url}
+                                      alt={`${collection.title} - ${idx + 1}`}
+                                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                  </CardContent>
+                                </Card>
+                              </div>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                        <CarouselPrevious className="left-2" />
+                        <CarouselNext className="right-2" />
+                      </Carousel>
+                    </div>
 
-                {/* Details */}
-                <div className="space-y-4">
-                  <h2 className="text-2xl font-serif font-bold text-gray-900">
-                    {collection.title}
-                  </h2>
-                  <p className="text-gray-600 leading-relaxed">
-                    {collection.description}
-                  </p>
-                  {collection.price > 0 && (
-                    <p className="text-xl font-medium text-gray-900">
-                      Starting from ${collection.price.toLocaleString()}
-                    </p>
-                  )}
-                  <div className="flex gap-3 mt-4">
-                    <Button className="flex-1">View Full Collection</Button>
-                    {user && (
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedCollection(collection);
-                          setVideoModalOpen(true);
-                        }}
-                        className="gap-2"
-                      >
-                        <Video className="h-4 w-4" />
-                        Generate Video
-                      </Button>
-                    )}
+                    {/* Details */}
+                    <div className="space-y-4">
+                      <h2 className="text-2xl font-serif font-bold text-gray-900">
+                        {collection.title}
+                      </h2>
+                      <p className="text-gray-600 leading-relaxed">
+                        {collection.description}
+                      </p>
+                      {collection.price > 0 && (
+                        <p className="text-xl font-medium text-gray-900">
+                          Starting from ${collection.price.toLocaleString()}
+                        </p>
+                      )}
+                      <Button className="mt-4">View Full Collection</Button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );

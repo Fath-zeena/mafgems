@@ -116,13 +116,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </TabsContent>
-        {/* ... other tabs ... */}
-        
-        <DesignDetailsModal 
-          isOpen={isDesignModalOpen} 
-          onClose={() => setIsDesignModalOpen(false)} 
-        />
-      </Tabs>
+
         <TabsContent value="bookings">
           <Card>
             <CardHeader>
@@ -156,6 +150,12 @@ export default function DashboardPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <DesignDetailsModal 
+        isOpen={isDesignModalOpen} 
+        onClose={() => setIsDesignModalOpen(false)}
+        design={{}}
+      />
     </div>
   );
 }

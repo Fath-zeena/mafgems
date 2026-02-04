@@ -1,61 +1,53 @@
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- * Jewelry Video Generation API with Human Models
- * Generates promotional videos featuring jewelry pieces worn by human models
- * Integrates with The New Black AI for realistic try-on scenarios
+ * Jewelry Video Generation API
+ * Generates jewelry showcase videos with human models for Instagram sharing
+ * Integrates with The New Black AI for realistic jewelry visualization
  */
 
 const THE_NEW_BLACK_API_BASE = "https://thenewblack.ai/api/1.1/wf";
 
-interface JewelryVideoRequest {
-  collectionId?: string;
-  collectionTitle: string;
+interface VideoGenerationRequest {
   gemName: string;
   gemColor: string;
   metalColor: string;
   jewelryType: "ring" | "necklace" | "bracelet" | "earrings";
-  modelPreference?: "female" | "male" | "diverse"; // Model preference for video
-  videoStyle?: "showcase" | "detailed" | "lifestyle"; // Style of the video
-  description?: string;
+  modelStyle?: "luxury" | "casual" | "editorial" | "minimalist";
+  background?: "studio" | "lifestyle" | "gradient" | "transparent";
+  includeText?: boolean;
+  brandName?: string;
+  hashtagText?: string;
 }
 
-// Map jewelry types to API endpoints with video generation
-const videoEndpoints: { [key: string]: string } = {
-  ring: "jewelry_ring_video_showcase",
-  necklace: "jewelry_necklace_video_showcase",
-  bracelet: "jewelry_bracelet_video_showcase",
-  earrings: "jewelry_earrings_video_showcase",
-};
-
-// Metal descriptions for API requests
-const metalDescriptions: { [key: string]: string } = {
-  yellow_gold: "yellow gold",
-  white_gold: "white gold",
-  rose_gold: "rose gold",
-  platinum: "platinum",
-  silver: "silver",
-};
+interface VideoResponse {
+  success: boolean;
+  videoUrl?: string;
+  status?: string;
+  message?: string;
+  estimatedTime?: number;
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const body: JewelryVideoRequest = await request.json();
+    const body: VideoGenerationRequest = await request.json();
     const {
-      collectionTitle,
       gemName,
       gemColor,
       metalColor,
       jewelryType,
-      modelPreference = "diverse",
-      videoStyle = "showcase",
-      description,
+      modelStyle = "luxury",
+      background = "studio",
+      includeText = true,
+      brandName = "MAFGEMS",
+      hashtagText = "#CustomJewelry #MafgGems",
     } = body;
 
     // Validate required fields
-    if (!collectionTitle || !gemName || !metalColor || !jewelryType) {
+    if (!gemName || !metalColor || !jewelryType) {
       return NextResponse.json(
         {
-          error: "Missing required fields: collectionTitle, gemName, metalColor, jewelryType",
+          error: "Missing required fields: gemName, metalColor, jewelryType",
         },
         { status: 400 }
       );
@@ -65,109 +57,179 @@ export async function POST(request: NextRequest) {
     if (!apiKey) {
       return NextResponse.json(
         {
-          error: "The New Black API key not configured. Add THE_NEW_BLACK_API_KEY to environment variables.",
+          error: "New Black AI API key not configured",
         },
         { status: 500 }
       );
     }
 
-    // Get the appropriate endpoint for video generation
-    const endpoint = videoEndpoints[jewelryType] || "jewelry_ring_video_showcase";
-    const apiUrl = `${THE_NEW_BLACK_API_BASE}/${endpoint}?api_key=${apiKey}`;
-
-    // Build the request description for the video
-    const metalDesc = metalDescriptions[metalColor] || "gold";
-    const videoDescription =
-      description ||
-      `Professional ${videoStyle} video showcasing a stunning ${metalDesc} ${jewelryType} from our ${collectionTitle} collection, featuring a ${gemColor.toLowerCase()} ${gemName} gemstone. ${modelPreference === "diverse" ? "Shown on diverse models." : `Modeled by ${modelPreference} model.`} Perfect for Instagram and social media sharing.`;
-
-    console.log(`[New Black AI] Requesting ${jewelryType} video:`, {
-      collectionTitle,
+    // Construct The New Black AI request
+    const prompt = buildVideoPrompt(
       gemName,
+      gemColor,
       metalColor,
-      modelPreference,
-      videoStyle,
-      description: videoDescription,
-    });
+      jewelryType,
+      modelStyle,
+      background,
+      includeText,
+      brandName,
+      hashtagText
+    );
 
     // Call The New Black AI API for video generation
-    const formData = new FormData();
-    formData.append("jewelry_description", videoDescription);
-    formData.append("jewelry_type", jewelryType);
-    formData.append("gem_name", gemName);
-    formData.append("gem_color", gemColor);
-    formData.append("metal", metalDesc);
-    formData.append("video_style", videoStyle);
-    formData.append("model_preference", modelPreference);
-    formData.append("collection_title", collectionTitle);
-    formData.append("output_format", "video"); // Ensure video output
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      body: formData,
-      headers: {
-        // Don't set Content-Type; fetch will set it automatically for FormData
-      },
-    });
+    const response = await fetch(
+      `${THE_NEW_BLACK_API_BASE}/jewelry_model_video_generation`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt,
+          jewelry_type: jewelryType,
+          style: modelStyle,
+          background_type: background,
+          output_format: "mp4",
+          resolution: "1080p",
+          duration: 15, // 15-second video optimized for Instagram Reels
+          include_branding: includeText,
+          brand_name: brandName,
+        }),
+      }
+    );
 
     if (!response.ok) {
-      const errorData = await response.text();
-      console.error("[New Black AI] API Error:", {
-        status: response.status,
-        error: errorData,
-      });
-
-      if (response.status === 401) {
-        return NextResponse.json(
-          { error: "Invalid The New Black AI API key" },
-          { status: 401 }
-        );
-      }
-
+      const error = await response.text();
+      console.error("New Black AI API error:", error);
       return NextResponse.json(
         {
-          error: `The New Black AI API error: ${response.statusText}`,
-          details: errorData,
+          error: "Failed to generate video with New Black AI",
+          details: error,
         },
         { status: response.status }
       );
     }
 
-    const result = await response.json();
+    const data = await response.json();
 
-    console.log("[New Black AI] Video generation success:", {
-      jewelryType,
-      gemName,
-      videoUrl: result.video_url || result.url,
-      generationId: result.id,
-    });
-
-    // Return the generated video URL and metadata
     return NextResponse.json({
       success: true,
-      jewelryType,
-      gemName,
-      collectionTitle,
-      metalColor,
-      videoUrl: result.video_url || result.url,
-      videoId: result.id || null,
-      generationId: result.id || null,
-      creditsUsed: result.credits_used || 2, // Videos typically use more credits
-      thumbnailUrl: result.thumbnail_url || null,
-      duration: result.duration || "15-30 seconds",
-      status: result.status || "completed",
+      videoUrl: data.video_url || data.output_url,
+      status: data.status || "processing",
+      message: "Video generation initiated successfully",
+      estimatedTime: 30, // seconds
     });
-  } catch (error) {
-    console.error("[New Black AI] Error:", error);
-
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
-
+  } catch (error: any) {
+    console.error("Video generation error:", error);
     return NextResponse.json(
       {
-        error: "Failed to generate jewelry video",
-        details: errorMessage,
+        error: "Failed to process video generation request",
+        details: error.message,
       },
+      { status: 500 }
+    );
+  }
+}
+
+function buildVideoPrompt(
+  gemName: string,
+  gemColor: string,
+  metalColor: string,
+  jewelryType: string,
+  modelStyle: string,
+  background: string,
+  includeText: boolean,
+  brandName: string,
+  hashtagText: string
+): string {
+  const styleDescriptions: { [key: string]: string } = {
+    luxury:
+      "A sophisticated female model wearing haute couture, elegant and poised",
+    casual: "A modern woman in casual chic outfit, natural and approachable",
+    editorial:
+      "A professional model in editorial fashion shoot style, artistic lighting",
+    minimalist:
+      "A person in minimalist white background, clean and professional",
+  };
+
+  const backgroundDescriptions: { [key: string]: string } = {
+    studio: "Professional studio lighting with white backdrop",
+    lifestyle: "Lifestyle setting with natural lighting and elegant decor",
+    gradient: "Smooth gradient background, professional and modern",
+    transparent: "Transparent background, product-focused",
+  };
+
+  const basePrompt = `Create a stunning 15-second jewelry video showcasing a ${metalColor} ${jewelryType} featuring a beautiful ${gemColor} ${gemName}. 
+  
+Model Style: ${styleDescriptions[modelStyle] || styleDescriptions.luxury}
+Background: ${backgroundDescriptions[background] || backgroundDescriptions.studio}
+
+The video should:
+- Start with a close-up of the ${jewelryType} on the model
+- Slowly rotate/showcase the piece from multiple angles
+- Highlight the ${gemName} stone with proper light reflection
+- End with a elegant pose showing the complete look
+- Include smooth transitions and professional jewelry lighting
+${
+  includeText
+    ? `- Display "${brandName}" branding with "${hashtagText}" at the end`
+    : ""
+}
+- Be optimized for Instagram Reels (1080x1920 format)
+- Use warm, professional lighting to enhance the jewel`;
+
+  return basePrompt;
+}
+
+// GET endpoint to check video status
+export async function GET(request: NextRequest) {
+  const videoId = request.nextUrl.searchParams.get("id");
+
+  if (!videoId) {
+    return NextResponse.json(
+      { error: "Video ID is required" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const apiKey = process.env.THE_NEW_BLACK_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "API key not configured" },
+        { status: 500 }
+      );
+    }
+
+    // Check status of video generation
+    const response = await fetch(
+      `${THE_NEW_BLACK_API_BASE}/jewelry_model_video_status`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { error: "Failed to fetch video status" },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    return NextResponse.json({
+      status: data.status || "processing",
+      videoUrl: data.video_url,
+      progress: data.progress,
+    });
+  } catch (error: any) {
+    console.error("Status check error:", error);
+    return NextResponse.json(
+      { error: "Failed to check video status" },
       { status: 500 }
     );
   }
