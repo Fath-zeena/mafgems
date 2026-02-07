@@ -37,6 +37,7 @@ export default function CollectionsPage() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("collections");
+  const [sort, setSort] = useState<"newest"|"price_asc"|"price_desc">("newest");
   const supabase = createClient();
 
   const fetchData = async () => {
@@ -79,6 +80,10 @@ export default function CollectionsPage() {
     }
     if (minPrice !== undefined) data = data.filter((c) => (c.price || 0) >= minPrice);
     if (maxPrice !== undefined) data = data.filter((c) => (c.price || 0) <= maxPrice);
+    // Sorting
+    if (sort === "newest") data = data.sort((a, b) => (new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+    if (sort === "price_asc") data = data.sort((a, b) => ((a.price || 0) - (b.price || 0)));
+    if (sort === "price_desc") data = data.sort((a, b) => ((b.price || 0) - (a.price || 0)));
     setFilteredCollections(data);
   }, [collections, searchQuery, minPrice, maxPrice]);
 
@@ -106,16 +111,17 @@ export default function CollectionsPage() {
       </div>
 
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
-        <div className="w-full md:w-auto mb-4 md:mb-0 order-first md:order-last">
+        <div className="w-full md:w-1/2 mb-4 md:mb-0 order-first">
           <div className="flex flex-col gap-3">
+            <label className="sr-only">Search collections</label>
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search collections"
-              className="border rounded px-3 py-2 w-full"
+              placeholder="Search collections, designers or descriptions"
+              className="border rounded px-3 py-3 w-full text-sm"
             />
 
-            <div className="flex gap-3 flex-nowrap">
+            <div className="flex gap-3 mt-2">
               <input
                 type="number"
                 placeholder="Min"
@@ -132,10 +138,22 @@ export default function CollectionsPage() {
           </div>
         </div>
 
-        <p className="text-gray-700 max-w-2xl">
-          Discover signature collections crafted over 40 years of MAFGEMS heritage.
-          Each piece tells a unique story of elegance and precision.
-        </p>
+        <div className="w-full md:w-1/2 md:flex md:justify-end">
+          <div className="flex items-center gap-4">
+            <p className="text-gray-700 max-w-2xl hidden md:block">
+              Discover signature collections crafted over 40 years of MAFGEMS heritage.
+            </p>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as any)}
+              className="border rounded px-3 py-2 text-sm"
+            >
+              <option value="newest">Newest</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       {user && (

@@ -6,26 +6,27 @@ import { Button } from "@/components/ui/button";
 export default function HomePage() {
   return (
     <div className="relative flex flex-col items-center justify-center text-center min-h-[calc(100vh-80px)] bg-gray-100 px-4 py-10">
-      {/* Placeholder hero background */}
+      {/* Refined hero background */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-60"
+        className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage:
-            "url('https://placehold.co/1920x1080/EBF4FA/333?text=Exquisite+Jewellery')",
+            "url('/gems-images/hero-1920.jpg')",
         }}
-      ></div>
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/30" />
+      </div>
 
-      <div className="relative max-w-4xl p-6 md:p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-2xl">
+      <div className="relative max-w-4xl p-8 bg-white/70 backdrop-blur-sm rounded-xl shadow-2xl">
         <h1 className="text-4xl md:text-6xl font-serif font-extrabold tracking-tight text-gray-900">
           The Art of Bespoke Luxury
         </h1>
-        <p className="mt-6 text-lg md:text-2xl text-gray-700 font-light">
-          40 years of heritage meets the future of design. Create your unique
-          masterpiece with our AI-powered customiser.
+        <p className="mt-4 text-base md:text-xl text-gray-700 font-light">
+          40 years of heritage meets the future of design. Create your unique masterpiece with our AI-powered customiser.
         </p>
-        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+        <div className="mt-6 flex flex-col sm:flex-row justify-center gap-4">
           <Link href="/customizer">
-            <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-6">
+            <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-4">
               Design Your Ring
             </Button>
           </Link>
@@ -33,7 +34,7 @@ export default function HomePage() {
             <Button
               size="lg"
               variant="outline"
-              className="w-full sm:w-auto text-lg px-8 py-6"
+              className="w-full sm:w-auto text-lg px-8 py-4"
             >
               View Collections
             </Button>
