@@ -83,7 +83,7 @@ export default function ProductDetailPage() {
             {product.name}
           </h1>
           <p className="text-3xl font-medium text-primary">
-            ${product.price.toLocaleString()}
+            ${product.price.toLocaleString('en-GB')}
           </p>
           <Separator />
           <p className="text-muted-foreground text-lg">

@@ -249,7 +249,7 @@ export function JewelryVideoGenerator() {
                   <div className="flex justify-between items-start">
                     <div>
                       <h4 className="font-semibold text-sm capitalize">{video.gem_name} {video.jewelry_type}</h4>
-                      <p className="text-xs text-gray-500">{new Date(video.created_at).toLocaleDateString()}</p>
+                      <p className="text-xs text-gray-500">{new Date(video.created_at).toLocaleDateString('en-GB')}</p>
                     </div>
                     <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => window.open(video.video_url)}><Download className="h-4 w-4" /></Button>
                   </div>

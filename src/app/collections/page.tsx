@@ -206,7 +206,7 @@ export default function CollectionsPage() {
                         </p>
                         {collection.price > 0 && (
                           <p className="text-xl font-medium text-gray-900">
-                            Starting from ${collection.price.toLocaleString()}
+                            Starting from ${collection.price.toLocaleString('en-GB')}
                           </p>
                         )}
                         <Button className="mt-4">View Full Collection</Button>
@@ -280,7 +280,7 @@ export default function CollectionsPage() {
                       </p>
                       {collection.price > 0 && (
                         <p className="text-xl font-medium text-gray-900">
-                          Starting from ${collection.price.toLocaleString()}
+                          Starting from ${collection.price.toLocaleString('en-GB')}
                         </p>
                       )}
                       <Button className="mt-4">View Full Collection</Button>

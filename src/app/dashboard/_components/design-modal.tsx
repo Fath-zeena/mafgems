@@ -57,7 +57,7 @@ export function DesignDetailsModal({ isOpen, onClose, design }: DesignModalProps
               <p className="text-xs text-gray-500 uppercase">Created</p>
               <div className="flex items-center gap-1 font-medium">
                 <Calendar className="h-3 w-3" />
-                {new Date(design.created_at).toLocaleDateString()}
+                {new Date(design.created_at).toLocaleDateString('en-GB')}
               </div>
             </div>
           </div>

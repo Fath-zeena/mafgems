@@ -139,7 +139,7 @@ export default function DashboardPage() {
                         <div>
                           <h4 className="font-semibold text-gray-900 capitalize">{design.gem_name} {design.jewelry_type}</h4>
                           <p className="text-xs text-gray-500">Metal: {design.metal_color.replace('_', ' ')}</p>
-                          <p className="text-xs text-gray-500">Saved: {new Date(design.created_at).toLocaleDateString()}</p>
+                          <p className="text-xs text-gray-500">Saved: {new Date(design.created_at).toLocaleDateString('en-GB')}</p>
                         </div>
                       </div>
                       <Button variant="ghost" size="sm" onClick={() => setSelectedDesign(design)}>
