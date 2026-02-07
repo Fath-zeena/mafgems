@@ -105,17 +105,37 @@ export default function CollectionsPage() {
         )}
       </div>
 
-      <div className="flex items-center justify-between mb-6">
-        <p className="text-gray-700 max-w-2xl">
-        Discover signature collections crafted over 40 years of MAFGEMS heritage.
-        Each piece tells a unique story of elegance and precision.
-        </p>
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
+        <div className="w-full md:w-auto mb-4 md:mb-0 order-first md:order-last">
+          <div className="flex flex-col gap-3">
+            <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search collections"
+              className="border rounded px-3 py-2 w-full"
+            />
 
-        <div className="flex items-center gap-3">
-          <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search collections" className="border rounded px-3 py-2" />
-          <input type="number" placeholder="Min" className="w-20 border rounded px-2 py-2" onChange={(e) => setMinPrice(e.target.value ? Number(e.target.value) : undefined)} />
-          <input type="number" placeholder="Max" className="w-20 border rounded px-2 py-2" onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : undefined)} />
+            <div className="flex gap-3 flex-nowrap">
+              <input
+                type="number"
+                placeholder="Min"
+                className="w-1/2 border rounded px-2 py-2"
+                onChange={(e) => setMinPrice(e.target.value ? Number(e.target.value) : undefined)}
+              />
+              <input
+                type="number"
+                placeholder="Max"
+                className="w-1/2 border rounded px-2 py-2"
+                onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : undefined)}
+              />
+            </div>
+          </div>
         </div>
+
+        <p className="text-gray-700 max-w-2xl">
+          Discover signature collections crafted over 40 years of MAFGEMS heritage.
+          Each piece tells a unique story of elegance and precision.
+        </p>
       </div>
 
       {user && (
