@@ -5,10 +5,11 @@ import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CustomizerProvider, useCustomizer } from "@/context/customizer-context";
 import { Button } from "@/components/ui/button";
-import { Loader2, Video } from "lucide-react";
+import { Loader2, Video, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -31,6 +32,7 @@ function CustomizerInner() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const supabase = createClient();
+  const router = useRouter();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -40,7 +42,13 @@ function CustomizerInner() {
     checkUser();
   }, []);
 
-  const handleGeneratePresentation = async () => {
+  const handleAction = async () => {
+    if (!userId) {
+      toast.info("Please sign in to save your custom designs.");
+      router.push("/auth");
+      return;
+    }
+
     if (!selectedGem) {
       toast.error("Please select a gem first.");
       return;
@@ -58,7 +66,7 @@ function CustomizerInner() {
           gemColor: selectedGem.color,
           metalColor: metalColor,
           jewelryType: jewelryType,
-          userId: userId, // Pass userId to save in DB
+          userId: userId,
           description: `A stunning ${metalColor.replace("_", " ")} ${jewelryType} featuring a beautiful ${selectedGem.name} gemstone.`,
         }),
       });
@@ -101,15 +109,21 @@ function CustomizerInner() {
               </SelectContent>
             </Select>
           </div>
+          
           <Button
-            onClick={handleGeneratePresentation}
-            disabled={loading || !selectedGem}
-            className="w-full bg-green-600 hover:bg-green-700"
+            onClick={handleAction}
+            disabled={loading || (userId && !selectedGem)}
+            className={`w-full ${!userId ? 'bg-primary' : 'bg-green-600 hover:bg-green-700'}`}
           >
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating Presentation...
+                Generating...
+              </>
+            ) : !userId ? (
+              <>
+                <LogIn className="mr-2 h-4 w-4" />
+                Sign in to Generate & Save
               </>
             ) : (
               <>
@@ -118,15 +132,17 @@ function CustomizerInner() {
               </>
             )}
           </Button>
-          {!userId && !loading && (
-             <p className="mt-2 text-xs text-amber-600 font-medium">
-               Tip: Log in to save your designs to your dashboard!
+
+          {!userId && (
+             <p className="mt-2 text-xs text-center text-muted-foreground">
+               Sign in to permanently save designs to your client dashboard.
              </p>
           )}
+
           {generatedImage && (
             <div className="mt-4 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
               <p className="text-xs font-medium text-green-700 dark:text-green-300 mb-2">
-                ✓ {userId ? "Saved to Dashboard!" : "Presentation Generated!"}
+                ✓ Saved to Dashboard!
               </p>
               <a
                 href={generatedImage}
