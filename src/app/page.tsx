@@ -7,13 +7,8 @@ export default function HomePage() {
   return (
     <div className="relative flex flex-col items-center justify-center text-center min-h-[calc(100vh-80px)] bg-gray-100 px-4 py-10">
       {/* Refined hero background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('/gems-images/hero-1920.jpg')",
-        }}
-      >
+      <div className="absolute inset-0">
+        <img src="/gems-images/hero-1920.svg" alt="Hero background" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/30" />
       </div>
 
