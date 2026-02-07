@@ -6,8 +6,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CustomizerProvider, useCustomizer } from "@/context/customizer-context";
 import { Button } from "@/components/ui/button";
 import { Loader2, Video } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
 import {
   Select,
   SelectContent,
@@ -27,8 +28,17 @@ const DynamicRingViewer = dynamic(
 function CustomizerInner() {
   const { selectedGem, metalColor, setMetalColor, jewelryType, setJewelryType } = useCustomizer();
   const [loading, setLoading] = useState(false);
-  const [videoId, setVideoId] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setUserId(user.id);
+    };
+    checkUser();
+  }, []);
 
   const handleGeneratePresentation = async () => {
     if (!selectedGem) {
@@ -38,7 +48,6 @@ function CustomizerInner() {
 
     setLoading(true);
     setGeneratedImage(null);
-    setVideoId(null);
 
     try {
       const response = await fetch("/api/generate-jewelry-presentation", {
@@ -49,6 +58,7 @@ function CustomizerInner() {
           gemColor: selectedGem.color,
           metalColor: metalColor,
           jewelryType: jewelryType,
+          userId: userId, // Pass userId to save in DB
           description: `A stunning ${metalColor.replace("_", " ")} ${jewelryType} featuring a beautiful ${selectedGem.name} gemstone.`,
         }),
       });
@@ -62,16 +72,11 @@ function CustomizerInner() {
       if (data.imageUrl) {
         setGeneratedImage(data.imageUrl);
         toast.success(
-          `${jewelryType.charAt(0).toUpperCase() + jewelryType.slice(1)} presentation generated successfully!`
+          `${jewelryType.charAt(0).toUpperCase() + jewelryType.slice(1)} presentation generated and saved to your dashboard!`
         );
-      } else {
-        throw new Error("No image generated");
       }
-    } catch (error) {
-      console.error(error);
-      const errorMsg =
-        error instanceof Error ? error.message : "Unknown error";
-      toast.error(`Error: ${errorMsg}`);
+    } catch (error: any) {
+      toast.error(`Error: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -113,10 +118,15 @@ function CustomizerInner() {
               </>
             )}
           </Button>
+          {!userId && !loading && (
+             <p className="mt-2 text-xs text-amber-600 font-medium">
+               Tip: Log in to save your designs to your dashboard!
+             </p>
+          )}
           {generatedImage && (
             <div className="mt-4 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
               <p className="text-xs font-medium text-green-700 dark:text-green-300 mb-2">
-                ✓ Presentation Generated!
+                ✓ {userId ? "Saved to Dashboard!" : "Presentation Generated!"}
               </p>
               <a
                 href={generatedImage}

@@ -4,36 +4,66 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Gem, Package, Clock, LogOut, Eye, ArrowRight } from "lucide-react";
+import { Gem, Package, Clock, LogOut, ArrowRight, Loader2 } from "lucide-react";
 import { DesignDetailsModal } from "./_components/design-modal";
-import Link from "next/link";
+
+interface UserDesign {
+  id: string;
+  gem_name: string;
+  metal_color: string;
+  jewelry_type: string;
+  image_url: string;
+  created_at: string;
+  description: string;
+}
 
 export default function DashboardPage() {
   const router = useRouter();
   const supabase = createClient();
   const [user, setUser] = useState<any>(null);
-  const [isDesignModalOpen, setIsDesignModalOpen] = useState(false);
+  const [designs, setDesigns] = useState<UserDesign[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedDesign, setSelectedDesign] = useState<UserDesign | null>(null);
+
+  const fetchDashboardData = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.push("/auth");
+      return;
+    }
+    setUser(user);
+
+    // Fetch user designs
+    const { data, error } = await supabase
+      .from("user_designs")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setDesigns(data);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push("/auth");
-        return;
-      }
-      setUser(user);
-    };
-    getUser();
-  }, [router, supabase]);
+    fetchDashboardData();
+  }, [router]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     router.push("/auth");
   };
 
-  if (!user) return null;
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -55,8 +85,8 @@ export default function DashboardPage() {
             <Gem className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">Custom rings pending review</p>
+            <div className="text-2xl font-bold">{designs.length}</div>
+            <p className="text-xs text-muted-foreground">Custom pieces in your history</p>
           </CardContent>
         </Card>
         <Card>
@@ -66,7 +96,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">Appear in upcoming drops</p>
+            <p className="text-xs text-muted-foreground">Active waitlist spots</p>
           </CardContent>
         </Card>
         <Card>
@@ -76,43 +106,52 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">Active shipments</p>
+            <p className="text-xs text-muted-foreground">Completed purchases</p>
           </CardContent>
         </Card>
       </div>
 
       <Tabs defaultValue="designs" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="designs">My Designs</TabsTrigger>
+          <TabsTrigger value="designs">My Design History</TabsTrigger>
           <TabsTrigger value="bookings">Pre-bookings</TabsTrigger>
           <TabsTrigger value="orders">Order History</TabsTrigger>
         </TabsList>
         <TabsContent value="designs" className="space-y-4">
           <Card>
             <CardHeader>
-               <CardTitle>Saved Customizer Designs</CardTitle>
+               <CardTitle>AI Generated Presentations</CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Mock List Item */}
-              <div className="border rounded-lg p-4 flex items-center justify-between hover:bg-gray-50 transition-colors mb-4">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Gem className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Custom Sapphire Ring</h4>
-                    <p className="text-sm text-gray-500">Last edited: Today</p>
+              {designs.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center text-gray-500 bg-gray-50 rounded-lg border-dashed border-2">
+                  <p className="mb-4">No designs saved yet.</p>
+                  <Button onClick={() => router.push('/customizer')}>Go to Customizer</Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {designs.map((design) => (
+                    <div key={design.id} className="border rounded-lg p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <div className="h-16 w-16 bg-gray-100 rounded-lg overflow-hidden border">
+                          <img src={design.image_url} alt={design.gem_name} className="w-full h-full object-cover" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900 capitalize">{design.gem_name} {design.jewelry_type}</h4>
+                          <p className="text-xs text-gray-500">Metal: {design.metal_color.replace('_', ' ')}</p>
+                          <p className="text-xs text-gray-500">Saved: {new Date(design.created_at).toLocaleDateString()}</p>
+                        </div>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={() => setSelectedDesign(design)}>
+                        View Details <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <div className="flex justify-center pt-4">
+                    <Button variant="outline" onClick={() => router.push('/customizer')}>Create New Design</Button>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setIsDesignModalOpen(true)}>
-                  View Details <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-
-               <div className="flex flex-col items-center justify-center py-8 text-center text-gray-500 bg-gray-50 rounded-lg border-dashed border-2">
-                <p className="mb-4">Create another unique piece</p>
-                <Button onClick={() => router.push('/customizer')}>Go to Customizer</Button>
-              </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -123,19 +162,7 @@ export default function DashboardPage() {
                <CardTitle>Pre-booked Items</CardTitle>
             </CardHeader>
             <CardContent>
-               {/* Mock Item */}
-               <div className="border rounded-lg p-4 flex items-center justify-between mb-4">
-                   <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 bg-amber-100 rounded-lg flex items-center justify-center">
-                        <Clock className="h-6 w-6 text-amber-600" />
-                      </div>
-                       <div>
-                         <h4 className="font-semibold text-gray-900">Royal Summer Collection Preview</h4>
-                         <p className="text-sm text-gray-500">Status: Waitlist Confirmed</p>
-                       </div>
-                   </div>
-                   <Button variant="outline" size="sm">Check Status</Button>
-               </div>
+               <div className="text-center py-12 text-gray-500">No active pre-bookings.</div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -151,11 +178,13 @@ export default function DashboardPage() {
         </TabsContent>
       </Tabs>
 
-      <DesignDetailsModal 
-        isOpen={isDesignModalOpen} 
-        onClose={() => setIsDesignModalOpen(false)}
-        design={{}}
-      />
+      {selectedDesign && (
+        <DesignDetailsModal 
+          isOpen={!!selectedDesign} 
+          onClose={() => setSelectedDesign(null)}
+          design={selectedDesign}
+        />
+      )}
     </div>
   );
 }

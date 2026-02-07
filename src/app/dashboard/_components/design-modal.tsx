@@ -9,31 +9,16 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Gem, Clock, CheckCircle2 } from "lucide-react";
+import { Gem, Calendar, ExternalLink } from "lucide-react";
 
 interface DesignModalProps {
   isOpen: boolean;
   onClose: () => void;
-  design: any; // Using any for mock data, replace with type later
+  design: any;
 }
 
-// Mock Data for demonstration
-const mockDesign = {
-  id: "DSN-2026-001",
-  gem: "Royal Blue Sapphire",
-  metal: "Platinum",
-  shape: "Oval Cut",
-  status: "In Review",
-  createdAt: "2026-02-04",
-  specs: {
-    carat: "2.5",
-    clarity: "VS1",
-    origin: "Ceylon"
-  }
-};
-
-export function DesignDetailsModal({ isOpen, onClose }: DesignModalProps) {
-  // In a real app, 'design' prop would determine content. Using mock for now.
+export function DesignDetailsModal({ isOpen, onClose, design }: DesignModalProps) {
+  if (!design) return null;
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -41,65 +26,56 @@ export function DesignDetailsModal({ isOpen, onClose }: DesignModalProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Gem className="h-5 w-5 text-primary" />
-            Custom Ring Design
+            Design Details
           </DialogTitle>
           <DialogDescription>
-            Reference: {mockDesign.id}
+            Reference: {design.id.slice(0, 8).toUpperCase()}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Status Badge */}
-          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-            <span className="text-sm font-medium text-gray-500">Current Status</span>
-            <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-100">
-              <Clock className="w-3 h-3 mr-1" />
-              {mockDesign.status}
-            </Badge>
+          {/* Image Preview */}
+          <div className="aspect-square bg-gray-100 rounded-xl overflow-hidden border shadow-inner">
+             <img src={design.image_url} alt={design.gem_name} className="w-full h-full object-cover" />
           </div>
 
           {/* Details Grid */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <p className="text-xs text-gray-500 uppercase">Gemstone</p>
-              <p className="font-medium">{mockDesign.gem}</p>
+              <p className="font-medium">{design.gem_name}</p>
             </div>
              <div className="space-y-1">
-              <p className="text-xs text-gray-500 uppercase">Cut / Shape</p>
-              <p className="font-medium">{mockDesign.shape}</p>
+              <p className="text-xs text-gray-500 uppercase">Jewelry Type</p>
+              <p className="font-medium capitalize">{design.jewelry_type}</p>
             </div>
              <div className="space-y-1">
               <p className="text-xs text-gray-500 uppercase">Metal Band</p>
-              <p className="font-medium">{mockDesign.metal}</p>
+              <p className="font-medium capitalize">{design.metal_color.replace('_', ' ')}</p>
             </div>
              <div className="space-y-1">
               <p className="text-xs text-gray-500 uppercase">Created</p>
-              <p className="font-medium">{mockDesign.createdAt}</p>
+              <div className="flex items-center gap-1 font-medium">
+                <Calendar className="h-3 w-3" />
+                {new Date(design.created_at).toLocaleDateString()}
+              </div>
             </div>
           </div>
 
-           {/* Tech Specs */}
-           <div className="space-y-3 pt-4 border-t">
-              <h4 className="text-sm font-semibold">Technical Specifications</h4>
-              <div className="grid grid-cols-3 gap-2 text-sm">
-                 <div className="p-2 bg-gray-50 rounded text-center">
-                    <div className="text-gray-500 text-xs">Carat</div>
-                    <div className="font-medium">{mockDesign.specs.carat}</div>
-                 </div>
-                 <div className="p-2 bg-gray-50 rounded text-center">
-                    <div className="text-gray-500 text-xs">Clarity</div>
-                    <div className="font-medium">{mockDesign.specs.clarity}</div>
-                 </div>
-                 <div className="p-2 bg-gray-50 rounded text-center">
-                    <div className="text-gray-500 text-xs">Origin</div>
-                    <div className="font-medium">{mockDesign.specs.origin}</div>
-                 </div>
-              </div>
+           {/* Description */}
+           <div className="space-y-2 pt-4 border-t">
+              <h4 className="text-sm font-semibold">Prompt Description</h4>
+              <p className="text-sm text-gray-600 italic">"{design.description}"</p>
            </div>
 
           <div className="flex justify-end gap-2 pt-4">
-             <Button variant="outline" onClick={onClose}>Close</Button>
-             <Button>Contact Jeweler</Button>
+             <Button variant="outline" asChild>
+                <a href={design.image_url} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Full Size
+                </a>
+             </Button>
+             <Button>Enquire Piece</Button>
           </div>
         </div>
       </DialogContent>
