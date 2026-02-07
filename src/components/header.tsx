@@ -27,43 +27,31 @@ export function Header() {
           </div>
         </div>
 
-        {/* Primary Navigation - visible on all breakpoints, stacked on mobile */}
-        <nav className="mt-3 flex flex-wrap gap-4 text-sm font-medium">
-          <Link
-            href="/collections"
-            className="text-gray-700 hover:text-primary transition-colors"
-          >
+        {/* Primary Navigation - ordered to match Garrard-style structure */}
+        <nav className="mt-3 flex flex-wrap gap-4 text-sm font-medium items-center">
+          <Link href="/" className="text-gray-700 hover:text-primary transition-colors">
+            Home
+          </Link>
+          <Link href="/collections" className="text-gray-700 hover:text-primary transition-colors">
             Collections
           </Link>
-          <Link
-            href="/bespoke"
-            className="text-gray-700 hover:text-primary transition-colors"
-          >
+          <Link href="/bespoke" className="text-gray-700 hover:text-primary transition-colors">
             Bespoke
           </Link>
-          <Link
-            href="/about"
-            className="text-gray-700 hover:text-primary transition-colors"
-          >
-            About
-          </Link>
-          <Link
-            href="/services"
-            className="text-gray-700 hover:text-primary transition-colors"
-          >
+          <Link href="/services" className="text-gray-700 hover:text-primary transition-colors">
             Services
           </Link>
-          <Link
-            href="/contact"
-            className="text-gray-700 hover:text-primary transition-colors"
-          >
+          <Link href="/customizer" className="text-gray-900 hover:text-primary transition-colors">
+            Customiser
+          </Link>
+          <Link href="/about" className="text-gray-700 hover:text-primary transition-colors">
+            About Us
+          </Link>
+          <Link href="/contact" className="text-gray-700 hover:text-primary transition-colors">
             Contact
           </Link>
-          <Link
-            href="/customizer"
-            className="text-gray-900 hover:text-primary transition-colors"
-          >
-            Ring Customiser
+          <Link href="/admin" className="text-gray-700 hover:text-primary transition-colors">
+            Admin
           </Link>
         </nav>
       </div>
