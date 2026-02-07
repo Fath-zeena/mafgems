@@ -30,6 +30,10 @@ import { Plus, Video } from "lucide-react";
 export default function CollectionsPage() {
   const [user, setUser] = useState<any>(null);
   const [collections, setCollections] = useState<CollectionItem[]>([]);
+  const [filteredCollections, setFilteredCollections] = useState<CollectionItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
+  const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("collections");
@@ -67,6 +71,17 @@ export default function CollectionsPage() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    let data = collections.slice();
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      data = data.filter((c) => (c.title || "").toLowerCase().includes(q) || (c.description || "").toLowerCase().includes(q));
+    }
+    if (minPrice !== undefined) data = data.filter((c) => (c.price || 0) >= minPrice);
+    if (maxPrice !== undefined) data = data.filter((c) => (c.price || 0) <= maxPrice);
+    setFilteredCollections(data);
+  }, [collections, searchQuery, minPrice, maxPrice]);
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex justify-between items-center mb-6">
@@ -90,10 +105,18 @@ export default function CollectionsPage() {
         )}
       </div>
 
-      <p className="text-gray-700 max-w-2xl mb-12">
+      <div className="flex items-center justify-between mb-6">
+        <p className="text-gray-700 max-w-2xl">
         Discover signature collections crafted over 40 years of MAFGEMS heritage.
         Each piece tells a unique story of elegance and precision.
-      </p>
+        </p>
+
+        <div className="flex items-center gap-3">
+          <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search collections" className="border rounded px-3 py-2" />
+          <input type="number" placeholder="Min" className="w-20 border rounded px-2 py-2" onChange={(e) => setMinPrice(e.target.value ? Number(e.target.value) : undefined)} />
+          <input type="number" placeholder="Max" className="w-20 border rounded px-2 py-2" onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : undefined)} />
+        </div>
+      </div>
 
       {user && (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -145,7 +168,7 @@ export default function CollectionsPage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-16">
-                {collections.map((collection) => (
+                {(filteredCollections.length ? filteredCollections : collections).map((collection) => (
                   <div key={collection.id} className="group">
                     <div className="grid md:grid-cols-2 gap-8 items-center">
                       {/* Images Carousel */}

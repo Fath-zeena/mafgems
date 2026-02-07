@@ -46,6 +46,10 @@ export function JewelryVideoGenerator() {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [generatedVideos, setGeneratedVideos] = useState<GeneratedVideo[]>([]);
+  const [gems, setGems] = useState<any[]>([]);
+  const [attachOpen, setAttachOpen] = useState(false);
+  const [selectedVideoToAttach, setSelectedVideoToAttach] = useState<GeneratedVideo | null>(null);
+  const [selectedGemId, setSelectedGemId] = useState<number | null>(null);
   
   const supabase = createClient();
 
@@ -53,6 +57,9 @@ export function JewelryVideoGenerator() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+      // fetch available gems to attach
+      const { data: gemRows } = await supabase.from("gems").select("id,name,video_urls").order("id", { ascending: true });
+      setGems((gemRows as any[]) || []);
 
       const response = await fetch(`/api/generate-jewelry-video?userId=${user.id}`);
       if (response.ok) {
@@ -111,6 +118,34 @@ export function JewelryVideoGenerator() {
       toast.success("Video record deleted");
     } catch (error) {
       toast.error("Failed to delete video record");
+    }
+  };
+
+  const attachVideoToGem = async () => {
+    if (!selectedVideoToAttach || !selectedGemId) {
+      toast.error("Select a gem to attach the video to");
+      return;
+    }
+
+    try {
+      const { data: gemRow, error: fetchErr } = await supabase.from("gems").select("id,video_urls").eq("id", selectedGemId).single();
+      if (fetchErr) throw fetchErr;
+
+      const existing: string[] = (gemRow?.video_urls as string[]) || [];
+      const updated = Array.from(new Set([...existing, selectedVideoToAttach.video_url]));
+
+      const { error: updateErr } = await supabase.from("gems").update({ video_urls: updated }).eq("id", selectedGemId);
+      if (updateErr) throw updateErr;
+
+      toast.success("Video attached to gem successfully");
+      setAttachOpen(false);
+      setSelectedVideoToAttach(null);
+      setSelectedGemId(null);
+      const { data: gemRows } = await supabase.from("gems").select("id,name,video_urls").order("id", { ascending: true });
+      setGems((gemRows as any[]) || []);
+    } catch (err: any) {
+      console.error("Attach failed:", err);
+      toast.error(err?.message || "Failed to attach video to gem");
     }
   };
 
@@ -207,6 +242,7 @@ export function JewelryVideoGenerator() {
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                     <Button size="sm" variant="secondary" onClick={() => window.open(video.video_url)}><Eye className="h-4 w-4 mr-1" /> View</Button>
                     <Button size="sm" variant="destructive" onClick={() => deleteVideo(video.id)}><Trash2 className="h-4 w-4" /></Button>
+                    <Button size="sm" variant="outline" onClick={() => { setSelectedVideoToAttach(video); setAttachOpen(true); }}><Share2 className="h-4 w-4" /> Attach</Button>
                   </div>
                 </div>
                 <CardContent className="p-4">
@@ -223,6 +259,40 @@ export function JewelryVideoGenerator() {
           </div>
         )}
       </div>
+
+      <Dialog open={attachOpen} onOpenChange={setAttachOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Attach Video to Gem</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">Attach the selected generated video to a gem record so it appears on product pages.</p>
+
+            <div>
+              <Label>Video</Label>
+              <div className="text-sm p-2 bg-gray-100 rounded">{selectedVideoToAttach?.gem_name} — <a href={selectedVideoToAttach?.video_url} target="_blank" rel="noreferrer" className="text-primary">Open</a></div>
+            </div>
+
+            <div>
+              <Label>Choose Gem</Label>
+              <select className="w-full border rounded px-2 py-2" value={selectedGemId ?? ""} onChange={(e) => setSelectedGemId(Number(e.target.value))}>
+                <option value="">-- Select a gem --</option>
+                {gems.map((g) => (
+                  <option key={g.id} value={g.id}>{g.name} (#{g.id})</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button variant="ghost" onClick={() => setAttachOpen(false)}>Cancel</Button>
+              <Button onClick={attachVideoToGem}>Attach</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
+// Attach dialog markup appended to end of file

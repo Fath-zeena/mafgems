@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCustomizer } from "@/context/customizer-context";
+import { GemViewer } from "@/components/gem-viewer";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import type { Gem } from "@/types";
@@ -76,6 +77,20 @@ export function GemGallery() {
     setSelectedGem(null);
   };
 
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerGem, setViewerGem] = useState<Gem | null>(null);
+
+  const openViewer = (gem: Gem) => {
+    setViewerGem(gem);
+    setViewerOpen(true);
+    setSelectedGem(gem);
+  };
+
+  const closeViewer = () => {
+    setViewerOpen(false);
+    setViewerGem(null);
+  };
+
   if (loading) {
     return (
       <Card>
@@ -116,11 +131,11 @@ export function GemGallery() {
                 selectedGem?.id === gem.id && "ring-2 ring-primary shadow-lg"
               )}
               draggable
-              onClick={() => handleSelectGem(gem)}
+              onClick={() => openViewer(gem)}
               onDragStart={(e) => handleDragStart(e, gem)}
             >
               <Image
-                src={gem.image_url}
+                src={gem.image_url || "/placeholder-gem.png"}
                 alt={gem.name}
                 width={80}
                 height={80}
@@ -138,6 +153,9 @@ export function GemGallery() {
           >
             Remove Gem
           </Button>
+        )}
+        {viewerGem && (
+          <GemViewer gem={viewerGem} open={viewerOpen} onClose={closeViewer} />
         )}
       </CardContent>
     </Card>
