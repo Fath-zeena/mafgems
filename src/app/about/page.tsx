@@ -7,7 +7,7 @@ export default function AboutPage() {
         About MAFGEMS
       </h1>
       <p className="text-gray-700 max-w-2xl mb-4">
-        MAFGEMS has been crafting fine jewelry for over 40 years. What began as
+        MAFGEMS has been crafting fine jewellery for over 40 years. What began as
         a family atelier has grown into a renowned house of design, trusted by
         generations for its craftsmanship and integrity.
       </p>

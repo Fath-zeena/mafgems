@@ -144,7 +144,7 @@ export default function CollectionsPage() {
                   <DialogHeader>
                     <DialogTitle>Add New Collection</DialogTitle>
                     <DialogDescription>
-                      Upload a new collection of jewelry items.
+                      Upload a new collection of jewellery items.
                     </DialogDescription>
                   </DialogHeader>
                   <UploadCollectionForm onSuccess={fetchData} setOpen={setOpen} />

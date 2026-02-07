@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MAFGEMS - Exquisite Jewelry",
-  description: "Craft your own timeless piece with our jewelry customizer.",
+  title: "MAFGEMS - Exquisite Jewellery",
+  description: "Craft your own timeless piece with our jewellery customiser.",
 };
 
 export default function RootLayout({

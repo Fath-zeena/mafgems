@@ -66,7 +66,7 @@ function CustomizerInner() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to generate jewelry presentation.");
+        throw new Error(data.error || "Failed to generate jewellery presentation.");
       }
 
       if (data.imageUrl) {
@@ -85,10 +85,10 @@ function CustomizerInner() {
   return (
     <div className="flex flex-col md:flex-row min-h-[calc(100vh-80px)] bg-background text-foreground">
       <aside className="w-full md:w-80 lg:w-96 md:h-auto p-4 overflow-y-auto border-b md:border-b-0 md:border-r border-border">
-        <h1 className="text-2xl font-bold mb-4">Jewelry Customizer</h1>
+        <h1 className="text-2xl font-bold mb-4">Jewellery Customiser</h1>
         <div className="mb-6">
           <div className="mb-4">
-            <label className="text-sm font-medium mb-2 block">Jewelry Type</label>
+            <label className="text-sm font-medium mb-2 block">Jewellery Type</label>
             <Select value={jewelryType} onValueChange={(value: any) => setJewelryType(value)}>
               <SelectTrigger className="w-full">
                 <SelectValue />

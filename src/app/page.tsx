@@ -11,7 +11,7 @@ export default function HomePage() {
         className="absolute inset-0 bg-cover bg-center opacity-60"
         style={{
           backgroundImage:
-            "url('https://placehold.co/1920x1080/EBF4FA/333?text=Exquisite+Jewelry')",
+            "url('https://placehold.co/1920x1080/EBF4FA/333?text=Exquisite+Jewellery')",
         }}
       ></div>
 
@@ -21,7 +21,7 @@ export default function HomePage() {
         </h1>
         <p className="mt-6 text-lg md:text-2xl text-gray-700 font-light">
           40 years of heritage meets the future of design. Create your unique
-          masterpiece with our AI-powered customizer.
+          masterpiece with our AI-powered customiser.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
           <Link href="/customizer">

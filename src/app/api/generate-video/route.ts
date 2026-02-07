@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     const openai = getOpenAI();
 
     // 1. AI Brain: Generate the script using OpenAI
-    const prompt = `You are a luxury jewelry concierge for MAFGEMS. Write a short, elegant, 20-second script (max 50 words) to present a custom piece of jewelry. The piece is a ${gemName} set in ${metalColor} gold. Focus on the luxury and timelessness of the design.`;
+    const prompt = `You are a luxury jewellery concierge for MAFGEMS. Write a short, elegant, 20-second script (max 50 words) to present a custom piece of jewellery. The piece is a ${gemName} set in ${metalColor} gold. Focus on the luxury and timelessness of the design.`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo", // Using a fast model for script generation
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       max_tokens: 100,
     });
 
-    const script = completion.choices[0].message.content || "Discover your exquisite custom jewelry piece.";
+    const script = completion.choices[0].message.content || "Discover your exquisite custom jewellery piece.";
 
     // 2. AI Face: Send the script and image to HeyGen API
     const heygenPayload = {

@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 /**
- * Jewelry Video Generation API
- * Generates jewelry showcase videos and saves metadata to Supabase
+ * Jewellery Video Generation API
+ * Generates jewellery showcase videos and saves metadata to Supabase
  */
 
 const THE_NEW_BLACK_API_BASE = "https://thenewblack.ai/api/1.1/wf";
@@ -124,7 +124,7 @@ function buildVideoPrompt(
   jewelryType: string, modelStyle: string, background: string, 
   includeText: boolean, brandName: string, hashtagText: string
 ): string {
-  return `Create a stunning 15-second jewelry video showcasing a ${metalColor} ${jewelryType} featuring a beautiful ${gemColor} ${gemName}. Optimized for Instagram Reels. Style: ${modelStyle}. Background: ${background}.`;
+  return `Create a stunning 15-second jewellery video showcasing a ${metalColor} ${jewelryType} featuring a beautiful ${gemColor} ${gemName}. Optimized for Instagram Reels. Style: ${modelStyle}. Background: ${background}.`;
 }
 
 export async function GET(request: NextRequest) {

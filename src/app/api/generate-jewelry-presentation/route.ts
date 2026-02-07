@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 
 /**
  * The New Black AI Virtual Try-On API Integration
- * Generates AI jewelry presentations and saves to user_designs table
+ * Generates AI jewellery presentations and saves to user_designs table
  */
 
 const THE_NEW_BLACK_API_BASE = "https://thenewblack.ai/api/1.1/wf";

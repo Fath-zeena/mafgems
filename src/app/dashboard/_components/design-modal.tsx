@@ -46,7 +46,7 @@ export function DesignDetailsModal({ isOpen, onClose, design }: DesignModalProps
               <p className="font-medium">{design.gem_name}</p>
             </div>
              <div className="space-y-1">
-              <p className="text-xs text-gray-500 uppercase">Jewelry Type</p>
+              <p className="text-xs text-gray-500 uppercase">Jewellery Type</p>
               <p className="font-medium capitalize">{design.jewelry_type}</p>
             </div>
              <div className="space-y-1">

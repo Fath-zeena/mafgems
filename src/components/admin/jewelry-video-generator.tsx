@@ -157,7 +157,7 @@ export function JewelryVideoGenerator() {
             <div className="flex items-center gap-3">
               <Video className="h-6 w-6 text-primary" />
               <div>
-                <CardTitle>Jewelry Video Generator</CardTitle>
+                <CardTitle>Jewellery Video Generator</CardTitle>
                 <CardDescription>
                   Create Instagram-ready videos with AI models showcasing your designs
                 </CardDescription>
@@ -172,9 +172,9 @@ export function JewelryVideoGenerator() {
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>Generate Jewelry Video</DialogTitle>
+                  <DialogTitle>Generate Jewellery Video</DialogTitle>
                   <DialogDescription>
-                    Create a 15-second video with AI model showcasing your jewelry design
+                    Create a 15-second video with AI model showcasing your jewellery design
                   </DialogDescription>
                 </DialogHeader>
 
@@ -204,7 +204,7 @@ export function JewelryVideoGenerator() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="jewelryType">Jewelry Type</Label>
+                      <Label htmlFor="jewelryType">Jewellery Type</Label>
                       <Select value={jewelryType} onValueChange={(val: any) => setJewelryType(val)}>
                         <SelectTrigger id="jewelryType"><SelectValue /></SelectTrigger>
                         <SelectContent>

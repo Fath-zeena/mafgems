@@ -63,7 +63,7 @@ export function Header() {
             href="/customizer"
             className="text-gray-900 hover:text-primary transition-colors"
           >
-            Ring Customizer
+            Ring Customiser
           </Link>
         </nav>
       </div>

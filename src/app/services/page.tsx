@@ -7,7 +7,7 @@ export default function ServicesPage() {
         Services
       </h1>
       <p className="text-gray-700 max-w-2xl mb-8">
-        Our relationship with your jewelry does not end at purchase. MAFGEMS
+        Our relationship with your jewellery does not end at purchase. MAFGEMS
         offers a range of services to care for your pieces throughout their
         lifetime.
       </p>

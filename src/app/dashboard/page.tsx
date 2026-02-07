@@ -126,7 +126,7 @@ export default function DashboardPage() {
               {designs.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center text-gray-500 bg-gray-50 rounded-lg border-dashed border-2">
                   <p className="mb-4">No designs saved yet.</p>
-                  <Button onClick={() => router.push('/customizer')}>Go to Customizer</Button>
+                  <Button onClick={() => router.push('/customizer')}>Go to Customiser</Button>
                 </div>
               ) : (
                 <div className="space-y-4">
