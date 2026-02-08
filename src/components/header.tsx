@@ -35,6 +35,9 @@ export function Header() {
           <Link href="/collections" className="text-gray-700 hover:text-primary transition-colors">
             Collections
           </Link>
+          <Link href="/presentation" className="text-gray-700 hover:text-primary transition-colors">
+            AI Presentation
+          </Link>
           <Link href="/bespoke" className="text-gray-700 hover:text-primary transition-colors">
             Bespoke
           </Link>

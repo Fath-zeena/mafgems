@@ -1,0 +1,899 @@
+{
+  "page": "Create Tab - The New Black AI Fashion Design Generator",
+  "description": "UI structure and configuration options for the Create tab",
+  "lastAnalyzed": "2024-02-08",
+  "layout": {
+    "structure": "Two-column layout with form panel on left and preview/canvas on right",
+    "topNavigation": {
+      "tabs": [
+        {
+          "name": "Create",
+          "active": true,
+          "description": "Main creation interface"
+        },
+        {
+          "name": "Gallery",
+          "active": false,
+          "description": "View all created designs"
+        }
+      ]
+    }
+  },
+  "inputMethodSelection": {
+    "section": "Input Method Selection Buttons",
+    "style": "Horizontal button group/tabs",
+    "description": "Primary selection for how to start the design process",
+    "options": [
+      {
+        "id": "text-to-image",
+        "label": "Text to Image",
+        "icon": "text-input",
+        "description": "Generate clothing designs from text descriptions",
+        "enabled": true,
+        "formFields": [
+          {
+            "name": "prompt",
+            "label": "Design Description",
+            "type": "textarea",
+            "placeholder": "Describe your clothing design...",
+            "required": true,
+            "characterLimit": 1000,
+            "examples": [
+              "Red silk dress with long sleeves",
+              "Casual blue denim jacket with pockets",
+              "Formal tuxedo with bow tie"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "text-to-video",
+        "label": "Text to Video",
+        "icon": "text-to-video",
+        "description": "Generate fashion videos from text descriptions",
+        "enabled": true,
+        "formFields": [
+          {
+            "name": "prompt",
+            "label": "Video Description",
+            "type": "textarea",
+            "placeholder": "Describe your video concept...",
+            "required": true,
+            "characterLimit": 1000
+          },
+          {
+            "name": "videoDuration",
+            "label": "Video Duration",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "15",
+                "label": "15 seconds"
+              },
+              {
+                "value": "30",
+                "label": "30 seconds"
+              },
+              {
+                "value": "60",
+                "label": "60 seconds"
+              }
+            ]
+          },
+          {
+            "name": "videoFormat",
+            "label": "Output Format",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "mp4",
+                "label": "MP4 (H.264)"
+              },
+              {
+                "value": "webm",
+                "label": "WebM"
+              },
+              {
+                "value": "mov",
+                "label": "MOV (QuickTime)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "image-to-video",
+        "label": "Image to Video",
+        "icon": "image-to-video",
+        "description": "Transform static clothing images into dynamic videos",
+        "enabled": true,
+        "formFields": [
+          {
+            "name": "image",
+            "label": "Upload Image",
+            "type": "file-upload",
+            "accept": ".jpg,.jpeg,.png,.webp",
+            "maxFileSize": "10MB",
+            "required": true
+          },
+          {
+            "name": "videoPrompt",
+            "label": "Video Style/Motion Description (Optional)",
+            "type": "textarea",
+            "placeholder": "Describe the motion or style...",
+            "required": false,
+            "characterLimit": 500
+          },
+          {
+            "name": "videoDuration",
+            "label": "Video Duration",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "15",
+                "label": "15 seconds"
+              },
+              {
+                "value": "30",
+                "label": "30 seconds"
+              },
+              {
+                "value": "60",
+                "label": "60 seconds"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "image-to-3d",
+        "label": "Image to 3D",
+        "icon": "image-to-3d",
+        "description": "Convert 2D clothing images into 3D models",
+        "enabled": true,
+        "formFields": [
+          {
+            "name": "image",
+            "label": "Upload Clothing Image",
+            "type": "file-upload",
+            "accept": ".jpg,.jpeg,.png,.webp",
+            "maxFileSize": "10MB",
+            "required": true
+          },
+          {
+            "name": "3dQuality",
+            "label": "3D Model Quality",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "standard",
+                "label": "Standard (faster processing)"
+              },
+              {
+                "value": "high",
+                "label": "High Quality (more detailed)"
+              },
+              {
+                "value": "ultra",
+                "label": "Ultra (highest detail)"
+              }
+            ]
+          },
+          {
+            "name": "3dFormat",
+            "label": "Export Format",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "glb",
+                "label": "GLB (recommended)"
+              },
+              {
+                "value": "gltf",
+                "label": "glTF"
+              },
+              {
+                "value": "obj",
+                "label": "OBJ"
+              },
+              {
+                "value": "fbx",
+                "label": "FBX"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "text-to-3d",
+        "label": "Text to 3D",
+        "icon": "text-to-3d",
+        "description": "Generate 3D clothing models directly from text descriptions",
+        "enabled": true,
+        "formFields": [
+          {
+            "name": "prompt",
+            "label": "3D Design Description",
+            "type": "textarea",
+            "placeholder": "Describe your 3D clothing piece...",
+            "required": true,
+            "characterLimit": 1000,
+            "examples": [
+              "Blue leather jacket with zippers",
+              "Flowing summer dress with floral pattern",
+              "Athletic hoodie with textured material"
+            ]
+          },
+          {
+            "name": "3dQuality",
+            "label": "Model Quality",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "standard",
+                "label": "Standard (faster)"
+              },
+              {
+                "value": "high",
+                "label": "High Quality"
+              },
+              {
+                "value": "ultra",
+                "label": "Ultra (most detailed)"
+              }
+            ]
+          },
+          {
+            "name": "3dFormat",
+            "label": "Export Format",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "glb",
+                "label": "GLB (recommended)"
+              },
+              {
+                "value": "gltf",
+                "label": "glTF"
+              },
+              {
+                "value": "obj",
+                "label": "OBJ"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "workflowSelection": {
+    "section": "Workflow Configuration",
+    "description": "Additional options based on input method selection",
+    "fields": [
+      {
+        "name": "modelProfile",
+        "label": "Model Profile (for fashion photos)",
+        "type": "select",
+        "conditional": "imageInput",
+        "options": [
+          {
+            "value": "frontal",
+            "label": "Front View"
+          },
+          {
+            "value": "side",
+            "label": "Side View"
+          },
+          {
+            "value": "back",
+            "label": "Back View"
+          },
+          {
+            "value": "full-body",
+            "label": "Full Body"
+          },
+          {
+            "value": "detail",
+            "label": "Detail/Close-up"
+          }
+        ]
+      },
+      {
+        "name": "clothingType",
+        "label": "Clothing Type",
+        "type": "select",
+        "options": [
+          {
+            "value": "dress",
+            "label": "Dress"
+          },
+          {
+            "value": "jacket",
+            "label": "Jacket/Coat"
+          },
+          {
+            "value": "shirt",
+            "label": "Shirt/Top"
+          },
+          {
+            "value": "pants",
+            "label": "Pants/Bottoms"
+          },
+          {
+            "value": "skirt",
+            "label": "Skirt"
+          },
+          {
+            "value": "accessory",
+            "label": "Accessory"
+          },
+          {
+            "value": "jewelry",
+            "label": "Jewelry"
+          },
+          {
+            "value": "swimwear",
+            "label": "Swimwear"
+          },
+          {
+            "value": "footwear",
+            "label": "Footwear/Shoes"
+          },
+          {
+            "value": "bag",
+            "label": "Bag/Purse"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "name": "background",
+        "label": "Background Style",
+        "type": "select",
+        "options": [
+          {
+            "value": "white",
+            "label": "White Background"
+          },
+          {
+            "value": "studio",
+            "label": "Studio Lighting"
+          },
+          {
+            "value": "outdoor",
+            "label": "Outdoor Scene"
+          },
+          {
+            "value": "minimalist",
+            "label": "Minimalist"
+          },
+          {
+            "value": "custom",
+            "label": "Custom Description"
+          },
+          {
+            "value": "transparent",
+            "label": "Transparent/None"
+          }
+        ]
+      },
+      {
+        "name": "outfit",
+        "label": "Outfit Configuration",
+        "type": "select",
+        "options": [
+          {
+            "value": "single-item",
+            "label": "Single Item"
+          },
+          {
+            "value": "complete-outfit",
+            "label": "Complete Outfit"
+          },
+          {
+            "value": "styling-set",
+            "label": "Styling Set (coordinated pieces)"
+          }
+        ]
+      },
+      {
+        "name": "format",
+        "label": "Output Format",
+        "type": "select",
+        "options": [
+          {
+            "value": "render",
+            "label": "High-res Render"
+          },
+          {
+            "value": "sketch",
+            "label": "Technical Sketch"
+          },
+          {
+            "value": "flat-sketch",
+            "label": "Flat Sketch"
+          },
+          {
+            "value": "3d-render",
+            "label": "3D Render"
+          },
+          {
+            "value": "video",
+            "label": "Video/Animation"
+          }
+        ]
+      }
+    ]
+  },
+  "imageStyleQuality": {
+    "section": "Image Style & Quality Options",
+    "fields": [
+      {
+        "name": "styleReference",
+        "label": "Style Reference",
+        "type": "select",
+        "description": "Base aesthetic style",
+        "options": [
+          {
+            "value": "photorealistic",
+            "label": "Photorealistic"
+          },
+          {
+            "value": "illustration",
+            "label": "Illustration"
+          },
+          {
+            "value": "sketch",
+            "label": "Sketch/Line Art"
+          },
+          {
+            "value": "digital-art",
+            "label": "Digital Art"
+          },
+          {
+            "value": "fashion-render",
+            "label": "Fashion Render"
+          },
+          {
+            "value": "minimal",
+            "label": "Minimal"
+          }
+        ]
+      },
+      {
+        "name": "colorPalette",
+        "label": "Color Palette",
+        "type": "select",
+        "options": [
+          {
+            "value": "vibrant",
+            "label": "Vibrant Colors"
+          },
+          {
+            "value": "pastel",
+            "label": "Pastel"
+          },
+          {
+            "value": "neutral",
+            "label": "Neutral Tones"
+          },
+          {
+            "value": "monochrome",
+            "label": "Monochrome"
+          },
+          {
+            "value": "custom",
+            "label": "Custom Colors"
+          }
+        ]
+      },
+      {
+        "name": "resolution",
+        "label": "Output Resolution",
+        "type": "select",
+        "options": [
+          {
+            "value": "1024",
+            "label": "1024x1024 (Standard)"
+          },
+          {
+            "value": "1512",
+            "label": "1512x1512 (High)"
+          },
+          {
+            "value": "2048",
+            "label": "2048x2048 (Ultra HD)"
+          }
+        ]
+      },
+      {
+        "name": "detailLevel",
+        "label": "Detail Level",
+        "type": "slider",
+        "min": 1,
+        "max": 10,
+        "default": 5,
+        "description": "Amount of fine detail in the output"
+      },
+      {
+        "name": "lighting",
+        "label": "Lighting Style",
+        "type": "select",
+        "options": [
+          {
+            "value": "studio",
+            "label": "Studio Lighting"
+          },
+          {
+            "value": "soft",
+            "label": "Soft/Diffused"
+          },
+          {
+            "value": "natural",
+            "label": "Natural Light"
+          },
+          {
+            "value": "dramatic",
+            "label": "Dramatic"
+          }
+        ]
+      }
+    ]
+  },
+  "videoDuration": {
+    "section": "Video Duration & Settings",
+    "description": "Applicable for Text to Video and Image to Video modes",
+    "fields": [
+      {
+        "name": "duration",
+        "label": "Video Length",
+        "type": "select",
+        "required": true,
+        "options": [
+          {
+            "value": "15",
+            "label": "15 seconds",
+            "estimatedTime": "30-45 seconds"
+          },
+          {
+            "value": "30",
+            "label": "30 seconds",
+            "estimatedTime": "1-2 minutes"
+          },
+          {
+            "value": "60",
+            "label": "60 seconds",
+            "estimatedTime": "2-4 minutes"
+          }
+        ]
+      },
+      {
+        "name": "frameRate",
+        "label": "Frame Rate",
+        "type": "select",
+        "options": [
+          {
+            "value": "24",
+            "label": "24 FPS (cinematic)"
+          },
+          {
+            "value": "30",
+            "label": "30 FPS (standard)"
+          },
+          {
+            "value": "60",
+            "label": "60 FPS (smooth)"
+          }
+        ]
+      },
+      {
+        "name": "videoStyle",
+        "label": "Video Style",
+        "type": "select",
+        "options": [
+          {
+            "value": "static-pan",
+            "label": "Static / Pan"
+          },
+          {
+            "value": "rotate",
+            "label": "Rotating View"
+          },
+          {
+            "value": "model-walk",
+            "label": "Model Walking"
+          },
+          {
+            "value": "fashion-show",
+            "label": "Fashion Show Style"
+          },
+          {
+            "value": "product-showcase",
+            "label": "Product Showcase"
+          }
+        ]
+      },
+      {
+        "name": "audioMusic",
+        "label": "Background Music/Audio",
+        "type": "select",
+        "options": [
+          {
+            "value": "none",
+            "label": "No Audio"
+          },
+          {
+            "value": "ambient",
+            "label": "Ambient Music"
+          },
+          {
+            "value": "upbeat",
+            "label": "Upbeat"
+          },
+          {
+            "value": "dramatic",
+            "label": "Dramatic"
+          }
+        ]
+      }
+    ]
+  },
+  "advancedOptions": {
+    "section": "Advanced Configuration",
+    "fields": [
+      {
+        "name": "modelBody",
+        "label": "Model Body Type",
+        "type": "select",
+        "options": [
+          {
+            "value": "xs",
+            "label": "Extra Small"
+          },
+          {
+            "value": "s",
+            "label": "Small"
+          },
+          {
+            "value": "m",
+            "label": "Medium"
+          },
+          {
+            "value": "l",
+            "label": "Large"
+          },
+          {
+            "value": "xl",
+            "label": "Extra Large"
+          }
+        ]
+      },
+      {
+        "name": "skinTone",
+        "label": "Skin Tone",
+        "type": "select",
+        "options": [
+          {
+            "value": "fair",
+            "label": "Fair"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "olive",
+            "label": "Olive"
+          },
+          {
+            "value": "tan",
+            "label": "Tan"
+          },
+          {
+            "value": "deep",
+            "label": "Deep"
+          }
+        ]
+      },
+      {
+        "name": "renderTechnique",
+        "label": "Rendering Technique",
+        "type": "select",
+        "options": [
+          {
+            "value": "pbr",
+            "label": "PBR (Physically Based)"
+          },
+          {
+            "value": "stylized",
+            "label": "Stylized"
+          },
+          {
+            "value": "sketch",
+            "label": "Sketch/Technical"
+          }
+        ]
+      },
+      {
+        "name": "iterationMode",
+        "label": "Generation Mode",
+        "type": "select",
+        "options": [
+          {
+            "value": "single",
+            "label": "Single (1 result)"
+          },
+          {
+            "value": "variations",
+            "label": "Variations (4 results)"
+          },
+          {
+            "value": "grid",
+            "label": "Grid (9 results)"
+          }
+        ]
+      }
+    ]
+  },
+  "formActions": {
+    "section": "Form Controls",
+    "layout": "Bottom of form panel - sticky/fixed",
+    "buttons": [
+      {
+        "id": "generate-button",
+        "label": "Create",
+        "type": "primary",
+        "position": "bottom-center",
+        "state": "enabled/disabled based on required fields",
+        "icon": "sparkles/wand",
+        "action": "submitForm",
+        "description": "Primary action to generate designs/videos"
+      },
+      {
+        "id": "reset-button",
+        "label": "Clear All",
+        "type": "secondary",
+        "position": "bottom-left",
+        "action": "resetForm",
+        "description": "Reset all form fields to defaults"
+      },
+      {
+        "id": "save-preset-button",
+        "label": "Save Preset",
+        "type": "tertiary",
+        "position": "bottom-right",
+        "action": "savePreset",
+        "description": "Save current configuration as reusable preset"
+      }
+    ]
+  },
+  "statusBar": {
+    "section": "Processing Status",
+    "location": "Below buttons/at bottom",
+    "displays": [
+      {
+        "name": "creditsRemaining",
+        "label": "Credits Used",
+        "format": "{used}/{total}",
+        "example": "5/50"
+      },
+      {
+        "name": "estimatedTime",
+        "label": "Estimated Time",
+        "example": "1-2 minutes"
+      },
+      {
+        "name": "processingStatus",
+        "label": "Status",
+        "values": [
+          "Ready",
+          "Processing...",
+          "Complete",
+          "Error"
+        ]
+      }
+    ]
+  },
+  "previewPanel": {
+    "section": "Right Column - Preview/Canvas",
+    "layout": "Full height, right side",
+    "features": [
+      {
+        "name": "livePreview",
+        "description": "Real-time preview of settings (if applicable)"
+      },
+      {
+        "name": "generationHistory",
+        "description": "Recent generations with thumbnails"
+      },
+      {
+        "name": "canvas",
+        "description": "Display area for generated content"
+      },
+      {
+        "name": "downloadButton",
+        "description": "Download generated design/video/3D model"
+      },
+      {
+        "name": "editButton",
+        "description": "Edit current generation (AI refinement)"
+      },
+      {
+        "name": "shareButton",
+        "description": "Share design with team"
+      }
+    ]
+  },
+  "conditionalFields": {
+    "description": "Fields that appear based on selections",
+    "rules": [
+      {
+        "condition": "inputMethod == 'text-to-image' || inputMethod == 'text-to-video' || inputMethod == 'text-to-3d'",
+        "show": ["prompt", "styleReference", "colorPalette"]
+      },
+      {
+        "condition": "inputMethod == 'image-to-video' || inputMethod == 'image-to-3d' || inputMethod == 'text-to-video'",
+        "show": ["videoDuration", "videoFormat", "frameRate"]
+      },
+      {
+        "condition": "inputMethod includes 'video'",
+        "show": ["audioMusic", "videoStyle"]
+      },
+      {
+        "condition": "inputMethod includes '3d'",
+        "show": ["3dQuality", "3dFormat", "renderTechnique"]
+      }
+    ]
+  },
+  "presets": {
+    "description": "Pre-configured templates",
+    "availablePresets": [
+      {
+        "name": "Casual Collection",
+        "clothingType": "shirt",
+        "style": "photorealistic",
+        "background": "white"
+      },
+      {
+        "name": "Evening Wear",
+        "clothingType": "dress",
+        "style": "fashion-render",
+        "background": "studio"
+      },
+      {
+        "name": "3D Product Showcase",
+        "format": "3d-render",
+        "3dQuality": "high"
+      },
+      {
+        "name": "Fashion Video",
+        "format": "video",
+        "duration": "30"
+      }
+    ]
+  },
+  "keyboardShortcuts": {
+    "generate": "Ctrl+Enter / Cmd+Enter",
+    "clearForm": "Ctrl+Shift+C / Cmd+Shift+C",
+    "focusPrompt": "Ctrl+K / Cmd+K"
+  },
+  "responsiveBreakpoints": {
+    "desktop": ">1400px - Two column layout",
+    "tablet": "768px-1400px - Stacked layout",
+    "mobile": "<768px - Single column, form above canvas"
+  }
+}
