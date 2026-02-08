@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -13,9 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Image as ImageIcon, Video, Box, Loader2, Download, Share2 } from "lucide-react";
 import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
 
 export default function PresentationPage() {
   // Input method selection
@@ -25,6 +25,7 @@ export default function PresentationPage() {
   const [textPrompt, setTextPrompt] = useState("");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClient();
 
   // Workflow configuration
   const [jewelryType, setJewelryType] = useState("ring");
@@ -53,6 +54,16 @@ export default function PresentationPage() {
   // Status
   const [isLoading, setIsLoading] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<{ url: string; type: string } | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Check user on mount
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setUserId(user.id);
+    };
+    checkUser();
+  }, [supabase]);
 
   const inputMethods = [
     { id: "text-to-image", label: "Text to Image", icon: ImageIcon },
@@ -65,9 +76,29 @@ export default function PresentationPage() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file size (max 10MB)
+      const maxSize = 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        toast.error("Image size must be less than 10MB");
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please upload a valid image file");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
-        setUploadedImage(e.target?.result as string);
+        const result = e.target?.result as string;
+        if (result) {
+          setUploadedImage(result);
+          toast.success("Image uploaded successfully!");
+        }
+      };
+      reader.onerror = () => {
+        toast.error("Failed to read image file");
       };
       reader.readAsDataURL(file);
     }
@@ -80,17 +111,72 @@ export default function PresentationPage() {
     }
 
     setIsLoading(true);
+    setGeneratedContent(null);
+    
     try {
-      // Simulate API call - replace with actual API integration
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      
-      setGeneratedContent({
-        url: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1024&q=80",
-        type: inputMethod,
+      const payload = {
+        inputMethod,
+        textPrompt: textPrompt || undefined,
+        imageUrl: uploadedImage || undefined,
+        jewelryType,
+        modelProfile,
+        background,
+        outfitConfig,
+        outputFormat,
+        styleReference,
+        colorPalette,
+        resolution,
+        detailLevel: detailLevel[0],
+        lightingStyle,
+        videoDuration,
+        frameRate,
+        videoStyle,
+        modelBodyType,
+        skinTone,
+        iterationMode,
+        userId: userId || undefined,
+      };
+
+      console.log("[Generation] Payload:", payload);
+
+      const response = await fetch("/api/generate-presentation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
-      toast.success("Presentation generated successfully!");
-    } catch (error) {
-      toast.error("Failed to generate presentation");
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errorMessage = data.error || `HTTP ${response.status}: ${response.statusText}`;
+        console.error("[Generation Error]:", errorMessage, data.details);
+        throw new Error(errorMessage);
+      }
+
+      if (!data.outputUrl) {
+        throw new Error("No output URL received from API");
+      }
+
+      setGeneratedContent({
+        url: data.outputUrl,
+        type: data.outputType,
+      });
+
+      const typeLabel = data.outputType.charAt(0).toUpperCase() + data.outputType.slice(1);
+      toast.success(`${typeLabel} generated successfully! ✨`);
+      
+      console.log("[Generation Success]:", {
+        type: data.outputType,
+        inputMethod: data.inputMethod,
+        jewelryType: data.jewelryType,
+      });
+    } catch (error: any) {
+      console.error("[Generation Error]:", error);
+      const errorMessage = error.message || "Failed to generate presentation. Please try again.";
+      toast.error(errorMessage);
+      setGeneratedContent(null);
     } finally {
       setIsLoading(false);
     }
