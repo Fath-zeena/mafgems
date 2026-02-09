@@ -19,7 +19,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function PresentationPage() {
   // Input method selection
-  const [inputMethod, setInputMethod] = useState<"text-to-image" | "text-to-video" | "image-to-video" | "image-to-3d" | "text-to-3d">("text-to-image");
+  const [inputMethod, setInputMethod] = useState<"text-to-image" | "text-to-video" | "image-to-video" | "image-to-3d" | "text-to-3d" | "ring-design" | "necklace-design" | "bracelet-design" | "earrings-design" | "ai-video">("ring-design");
 
   // Form fields
   const [textPrompt, setTextPrompt] = useState("");
@@ -66,12 +66,21 @@ export default function PresentationPage() {
   }, [supabase]);
 
   const inputMethods = [
+    { id: "ring-design", label: "Ring Design", icon: ImageIcon },
+    { id: "necklace-design", label: "Necklace Design", icon: ImageIcon },
+    { id: "bracelet-design", label: "Bracelet Design", icon: ImageIcon },
+    { id: "earrings-design", label: "Earrings Design", icon: ImageIcon },
     { id: "text-to-image", label: "Text to Image", icon: ImageIcon },
     { id: "text-to-video", label: "Text to Video", icon: Video },
+    { id: "ai-video", label: "AI Fashion Video", icon: Video },
     { id: "image-to-video", label: "Image to Video", icon: Video },
     { id: "image-to-3d", label: "Image to 3D", icon: Box },
     { id: "text-to-3d", label: "Text to 3D", icon: Box },
   ];
+
+  // Jewelry-specific optional fields
+  const [gender, setGender] = useState<"man" | "woman" | "unisex">("woman");
+  const [negativePrompt, setNegativePrompt] = useState("");
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -134,6 +143,8 @@ export default function PresentationPage() {
         modelBodyType,
         skinTone,
         iterationMode,
+        gender: gender || undefined,
+        negative: negativePrompt || undefined,
         userId: userId || undefined,
       };
 
@@ -182,9 +193,11 @@ export default function PresentationPage() {
     }
   };
 
-  const showImageFields = ["text-to-image", "text-to-video", "text-to-3d"].includes(inputMethod);
+  const showImageFields = ["text-to-image", "text-to-video", "text-to-3d", "ring-design", "necklace-design", "bracelet-design", "earrings-design"].includes(inputMethod);
   const showUploadFields = ["image-to-video", "image-to-3d"].includes(inputMethod);
   const showVideoSettings = ["text-to-video", "image-to-video"].includes(inputMethod);
+  const showAiVideoSettings = inputMethod === "ai-video";
+  const isJewelryDesign = ["ring-design", "necklace-design", "bracelet-design", "earrings-design"].includes(inputMethod);
   const show3DSettings = ["image-to-3d", "text-to-3d"].includes(inputMethod);
 
   return (
@@ -298,7 +311,8 @@ export default function PresentationPage() {
               </CardContent>
             </Card>
 
-            {/* Workflow Configuration */}
+            {/* Workflow Configuration - Hidden for jewelry design methods */}
+            {!isJewelryDesign && (
             <Card>
               <CardHeader>
                 <CardTitle>Workflow Configuration</CardTitle>
@@ -323,6 +337,26 @@ export default function PresentationPage() {
                     </SelectContent>
                   </Select>
                 </div>
+
+                {/* Jewelry Optional Fields: gender + negative prompt (passed to provider) */}
+                {['ring','necklace','bracelet','earrings'].includes(jewelryType) && (
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="gender">Gender</Label>
+                    <Select value={gender} onValueChange={(v) => setGender(v as any)}>
+                      <SelectTrigger id="gender">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="woman">Woman</SelectItem>
+                        <SelectItem value="man">Man</SelectItem>
+                        <SelectItem value="unisex">Unisex</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <Label htmlFor="negative">Exclude (Negative Prompt)</Label>
+                    <Input id="negative" value={negativePrompt} onChange={(e) => setNegativePrompt(e.target.value)} placeholder="Things to avoid in the design" />
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="model-profile">Model Profile</Label>
@@ -404,13 +438,15 @@ export default function PresentationPage() {
                 </div>
               </CardContent>
             </Card>
+            )}
 
-            {/* Style Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Style & Quality</CardTitle>
-                <CardDescription>Fine-tune the appearance and quality</CardDescription>
-              </CardHeader>
+            {/* Style Settings - Hidden for jewelry design methods */}
+            {!isJewelryDesign && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Style Settings</CardTitle>
+                  <CardDescription>Fine-tune the appearance and quality</CardDescription>
+                </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -494,9 +530,10 @@ export default function PresentationPage() {
                 </div>
               </CardContent>
             </Card>
+            )}
 
             {/* Video Settings */}
-            {showVideoSettings && (
+            {(showVideoSettings || showAiVideoSettings) && (
               <Card>
                 <CardHeader>
                   <CardTitle>Video Settings</CardTitle>
@@ -510,9 +547,18 @@ export default function PresentationPage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="15">15 seconds</SelectItem>
-                        <SelectItem value="30">30 seconds</SelectItem>
-                        <SelectItem value="60">60 seconds</SelectItem>
+                        {showAiVideoSettings ? (
+                          <>
+                            <SelectItem value="5">5 seconds</SelectItem>
+                            <SelectItem value="10">10 seconds</SelectItem>
+                          </>
+                        ) : (
+                          <>
+                            <SelectItem value="15">15 seconds</SelectItem>
+                            <SelectItem value="30">30 seconds</SelectItem>
+                            <SelectItem value="60">60 seconds</SelectItem>
+                          </>
+                        )}
                       </SelectContent>
                     </Select>
                   </div>

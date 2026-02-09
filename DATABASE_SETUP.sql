@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS presentation_generations (
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   
   -- Generation metadata
-  input_method TEXT NOT NULL CHECK (input_method IN ('text-to-image', 'text-to-video', 'image-to-video', 'image-to-3d', 'text-to-3d')),
+  input_method TEXT NOT NULL,
   jewelry_type TEXT NOT NULL,
   output_type TEXT NOT NULL CHECK (output_type IN ('image', 'video', '3d')),
   status TEXT NOT NULL DEFAULT 'completed' CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
