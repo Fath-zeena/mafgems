@@ -257,7 +257,7 @@ function Ring() {
         {/* The Gem - Lowered further to close gap */}
         {selectedGem && (
           <group position={[0, -0.19, 0]} scale={[0.62, 0.62, 0.62]}>
-            <OvalCutGem color={selectedGem.color} gemName={selectedGem.name} />
+            <OvalCutGem color={selectedGem.color || "#ff0000"} gemName={selectedGem.name} />
           </group>
         )}
       </group>

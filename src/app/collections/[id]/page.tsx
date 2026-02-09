@@ -72,7 +72,7 @@ export default function ProductDetailPage() {
       <div className="grid md:grid-cols-2 gap-12 items-start">
         <div className="aspect-square relative w-full overflow-hidden rounded-lg">
           <Image
-            src={product.image_url}
+            src={product.image_url || "/placeholder-image.jpg"}
             alt={product.name}
             fill
             className="object-cover"
@@ -83,7 +83,7 @@ export default function ProductDetailPage() {
             {product.name}
           </h1>
           <p className="text-3xl font-medium text-primary">
-            ${product.price.toLocaleString('en-GB')}
+            ${product.price?.toLocaleString('en-GB') || 'Price not available'}
           </p>
           <Separator />
           <p className="text-muted-foreground text-lg">

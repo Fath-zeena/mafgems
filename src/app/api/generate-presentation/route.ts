@@ -9,10 +9,14 @@ import { createClient } from "@supabase/supabase-js";
 const THE_NEW_BLACK_API_BASE = "https://thenewblack.ai/api/1.1/wf";
 
 // Initialize Supabase for server-side usage
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Missing Supabase environment variables');
+}
+
+const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
 
 // Mapping for new jewelry design methods to database-compatible methods
 const INPUT_METHOD_DB_MAPPING: { [key: string]: string } = {
@@ -99,10 +103,14 @@ const backgrounds: { [key: string]: string } = {
 };
 
 export async function POST(request: NextRequest) {
-  let body: PresentationRequest;
-  
+  // Define the expected body type with required keys for validation
+  type ValidatedBody = PresentationRequest;
+
+  let bodyRaw: any;
+  let body: ValidatedBody;
+
   try {
-    body = await request.json();
+    bodyRaw = await request.json();
   } catch (error) {
     return NextResponse.json(
       { error: "Invalid JSON in request body" },
@@ -110,14 +118,32 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Runtime validation and type narrowing
+  if (!bodyRaw || typeof bodyRaw !== 'object') {
+    return NextResponse.json(
+      { error: "Request body must be a valid object" },
+      { status: 400 }
+    );
+  }
+
+  if (!bodyRaw.inputMethod || typeof bodyRaw.inputMethod !== 'string') {
+    return NextResponse.json(
+      { error: "Missing or invalid required field: inputMethod" },
+      { status: 400 }
+    );
+  }
+
+  if (!bodyRaw.jewelryType || typeof bodyRaw.jewelryType !== 'string') {
+    return NextResponse.json(
+      { error: "Missing or invalid required field: jewelryType" },
+      { status: 400 }
+    );
+  }
+
+  // Type assert after validation
+  body = bodyRaw as ValidatedBody;
+
   try {
-    // Validate required fields
-    if (!body.inputMethod) {
-      return NextResponse.json(
-        { error: "Missing required field: inputMethod" },
-        { status: 400 }
-      );
-    }
 
     const validMethods = ["text-to-image", "text-to-video", "image-to-video", "image-to-3d", "text-to-3d", "ring-design", "necklace-design", "bracelet-design", "earrings-design", "ai-video"];
     if (!validMethods.includes(body.inputMethod)) {
@@ -247,18 +273,18 @@ export async function POST(request: NextRequest) {
     } else {
       // Generic parameters for other workflows
       formData.append("jewelry_type", body.jewelryType);
-      formData.append("model_profile", modelProfiles[body.modelProfile] || body.modelProfile);
-      formData.append("background_style", backgrounds[body.background] || body.background);
-      formData.append("output_format", body.outputFormat);
-      formData.append("style_reference", body.styleReference);
-      formData.append("color_palette", body.colorPalette);
-      formData.append("resolution", body.resolution);
+      formData.append("model_profile", body.modelProfile ? modelProfiles[body.modelProfile] : "frontal_view");
+      formData.append("background_style", body.background ? backgrounds[body.background] : "white_studio");
+      formData.append("output_format", body.outputFormat || "image");
+      formData.append("style_reference", body.styleReference || "");
+      formData.append("color_palette", body.colorPalette || "");
+      formData.append("resolution", body.resolution || "high");
       formData.append("detail_level", String(body.detailLevel || 5));
-      formData.append("lighting_style", body.lightingStyle);
-      formData.append("model_body_type", body.modelBodyType);
-      formData.append("skin_tone", body.skinTone);
-      formData.append("iteration_mode", body.iterationMode);
-      formData.append("outfit_config", body.outfitConfig);
+      formData.append("lighting_style", body.lightingStyle || "natural");
+      formData.append("model_body_type", body.modelBodyType || "standard");
+      formData.append("skin_tone", body.skinTone || "neutral");
+      formData.append("iteration_mode", body.iterationMode || "standard");
+      formData.append("outfit_config", body.outfitConfig || "");
 
       if (isTextBased && body.textPrompt) {
         formData.append("prompt", body.textPrompt);
@@ -499,6 +525,11 @@ function generateSimulatedUrl(config: PresentationRequest): string {
     "image-to-video": "https://media.coverta.ai/sample-jewelry-animation.mp4",
     "image-to-3d": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1024&q=80",
     "text-to-3d": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1024&q=80",
+    "ring-design": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1024&q=80",
+    "necklace-design": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1024&q=80",
+    "bracelet-design": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1024&q=80",
+    "earrings-design": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1024&q=80",
+    "ai-video": "https://media.coverta.ai/sample-jewelry-video.mp4",
   };
 
   return baseUrls[config.inputMethod] || baseUrls["text-to-image"];

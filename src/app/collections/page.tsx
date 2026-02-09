@@ -246,7 +246,7 @@ export default function CollectionsPage() {
                         <p className="text-gray-600 leading-relaxed">
                           {collection.description}
                         </p>
-                        {collection.price > 0 && (
+                        {collection.price && collection.price > 0 && (
                           <p className="text-xl font-medium text-gray-900">
                             Starting from ${collection.price.toLocaleString('en-GB')}
                           </p>
@@ -320,7 +320,7 @@ export default function CollectionsPage() {
                       <p className="text-gray-600 leading-relaxed">
                         {collection.description}
                       </p>
-                      {collection.price > 0 && (
+                      {collection.price && collection.price > 0 && (
                         <p className="text-xl font-medium text-gray-900">
                           Starting from ${collection.price.toLocaleString('en-GB')}
                         </p>
