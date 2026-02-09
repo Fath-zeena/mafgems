@@ -135,7 +135,7 @@ export function GemGallery() {
               onDragStart={(e) => handleDragStart(e, gem)}
             >
               <Image
-                src={gem.image_url || "/placeholder-gem.png"}
+                src={gem.image_url || "/placeholder-gem.svg"}
                 alt={gem.name}
                 width={80}
                 height={80}

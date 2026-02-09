@@ -5,11 +5,10 @@ import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   return (
-    <div className="relative flex flex-col items-center justify-center text-center min-h-[calc(100vh-80px)] bg-gray-100 px-4 py-10">
-      {/* Refined hero background */}
+    <div className="relative flex flex-col items-center justify-center text-center min-h-[calc(100vh-80px)] px-4 py-10">
+      {/* Jewelry-themed hero background */}
       <div className="absolute inset-0">
-        <img src="/gems-images/hero-1920.svg" alt="Hero background" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/30" />
+        <img src="/gems-images/jewelry-hero-bg.svg" alt="Jewelry background pattern" className="w-full h-full object-cover" />
       </div>
 
       <div className="relative max-w-3xl px-6 py-10 md:py-14 bg-transparent">
