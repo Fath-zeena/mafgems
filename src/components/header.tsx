@@ -53,9 +53,6 @@ export function Header() {
           <Link href="/contact" className="text-gray-700 hover:text-primary transition-colors">
             Contact
           </Link>
-          <Link href="/admin" className="text-gray-700 hover:text-primary transition-colors">
-            Admin
-          </Link>
         </nav>
       </div>
     </header>

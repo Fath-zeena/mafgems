@@ -110,6 +110,13 @@ export default function CollectionsPage() {
         )}
       </div>
 
+      {/* Description moved above search bar */}
+      <div className="mb-6">
+        <p className="text-gray-700 max-w-2xl text-center md:text-left">
+          Discover signature collections crafted over 40 years of MAFGEMS heritage.
+        </p>
+      </div>
+
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
         <div className="w-full md:w-1/2 mb-4 md:mb-0 order-first">
           <div className="flex flex-col gap-3">
@@ -140,9 +147,6 @@ export default function CollectionsPage() {
 
         <div className="w-full md:w-1/2 md:flex md:justify-end">
           <div className="flex items-center gap-4">
-            <p className="text-gray-700 max-w-2xl hidden md:block">
-              Discover signature collections crafted over 40 years of MAFGEMS heritage.
-            </p>
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as any)}

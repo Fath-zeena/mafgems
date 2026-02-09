@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Crimson_Text } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
-const inter = Inter({
+const crimsonText = Crimson_Text({
   subsets: ["latin"],
-  variable: "--font-sans",
+  weight: ["400", "600", "700"],
+  variable: "--font-serif",
 });
 
 export const metadata: Metadata = {
@@ -22,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en-GB">
       <body
-        className={`${inter.variable} font-sans antialiased flex flex-col min-h-screen`}
+        className={`${crimsonText.variable} font-serif antialiased flex flex-col min-h-screen`}
       >
         <Header />
         <main className="flex-grow">{children}</main>
