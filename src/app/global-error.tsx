@@ -1,17 +1,28 @@
-// src/app/global-error.tsx
-'use client';
-import React from 'react';
+'use client'
 
-export default function GlobalError({ error, reset }: { error: Error; reset: () => void }) {
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
   return (
-    <html>
-      <body>
-        <div style={{ padding: '20px', textAlign: 'center' }}>
-          <h1>{error?.message ? `Error: ${error.message}` : 'An error occurred'}</h1>
-          <p>Something went wrong globally. Please try again.</p>
-          <button onClick={reset} style={{ marginTop: 16 }}>Try again</button>
-        </div>
-      </body>
-    </html>
-  );
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <div className="text-center">
+        <h1 className="text-4xl md:text-6xl font-serif font-bold text-foreground mb-4">
+          Something went wrong globally!
+        </h1>
+        <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
+          An error occurred. Please try again.
+        </p>
+        <button
+          onClick={reset}
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-md"
+        >
+          Try again
+        </button>
+      </div>
+    </div>
+  )
 }
