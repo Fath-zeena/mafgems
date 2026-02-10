@@ -52,7 +52,7 @@
     "immer": "11.0.1",
     "input-otp": "^1.4.2",
     "lucide-react": "latest",
-    "next": "15.5.12",
+    "next": "15.5.11",
     "next-themes": "latest",
     "openai": "latest",
     "picomatch": "latest",
@@ -68,14 +68,6 @@
     "sonner": "latest",
     "tailwind-merge": "latest",
     "tailwindcss-animate": "latest",
-    "@next/swc-darwin-arm64": "15.5.12",
-    "@next/swc-darwin-x64": "15.5.12",
-    "@next/swc-linux-arm64-gnu": "15.5.12",
-    "@next/swc-linux-arm64-musl": "15.5.12",
-    "@next/swc-linux-x64-gnu": "15.5.12",
-    "@next/swc-linux-x64-musl": "15.5.12",
-    "@next/swc-win32-arm64-msvc": "15.5.12",
-    "@next/swc-win32-x64-msvc": "15.5.12",
     "three": "^0.166.1",
     "use-sync-external-store": "latest",
     "vaul": "^1.1.2",
@@ -83,17 +75,15 @@
     "zod": "latest"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "latest",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.166.0",
-    "autoprefixer": "^10.4.24",
     "dotenv": "^17.2.3",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "postcss": "latest",
-    "tailwindcss": "^3.4.19",
+    "tailwindcss": "latest",
     "typescript": "5.4.5"
   }
 }
