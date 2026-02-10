@@ -145,7 +145,7 @@ importers:
         version: 0.4.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       openai:
         specifier: latest
-        version: 6.18.0(ws@8.18.3)(zod@4.3.6)
+        version: 6.19.0(ws@8.18.3)(zod@4.3.6)
       picomatch:
         specifier: latest
         version: 4.0.3
@@ -154,7 +154,7 @@ importers:
         version: 18.3.1
       react-day-picker:
         specifier: ^9.12.0
-        version: 9.13.1(react@18.3.1)
+        version: 9.13.2(react@18.3.1)
       react-dom:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
@@ -2891,8 +2891,8 @@ packages:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
 
-  openai@6.18.0:
-    resolution: {integrity: sha512-odLRYyz9rlzz6g8gKn61RM2oP5UUm428sE2zOxZqS9MzVfD5/XW8UoEjpnRkzTuScXP7ZbP/m7fC+bl8jCOZZw==}
+  openai@6.19.0:
+    resolution: {integrity: sha512-5uGrF82Ql7TKgIWUnuxh+OyzYbPRPwYDSgGc05JowbXRFsOkuj0dJuCdPCTBZT4mcmp2NEvj/URwDzW+lYgmVw==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -3027,8 +3027,8 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-  react-day-picker@9.13.1:
-    resolution: {integrity: sha512-9nx2lBBJ0VZw5jJekId3DishwnJLiqY1Me1JvCrIyqbWwcflBTVaEkiK+w1bre5oMNWYo722eu+8UAMXWMqktw==}
+  react-day-picker@9.13.2:
+    resolution: {integrity: sha512-IMPiXfXVIAuR5Yk58DDPBC8QKClrhdXV+Tr/alBrwrHUw0qDDYB1m5zPNuTnnPIr/gmJ4ChMxmtqPdxm8+R4Eg==}
     engines: {node: '>=18'}
     peerDependencies:
       react: '>=16.8.0'
@@ -4853,7 +4853,7 @@ snapshots:
 
   '@types/react-day-picker@5.3.0(react@18.3.1)':
     dependencies:
-      react-day-picker: 9.13.1(react@18.3.1)
+      react-day-picker: 9.13.2(react@18.3.1)
     transitivePeerDependencies:
       - react
 
@@ -6321,7 +6321,7 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
-  openai@6.18.0(ws@8.18.3)(zod@4.3.6):
+  openai@6.19.0(ws@8.18.3)(zod@4.3.6):
     optionalDependencies:
       ws: 8.18.3
       zod: 4.3.6
@@ -6431,7 +6431,7 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  react-day-picker@9.13.1(react@18.3.1):
+  react-day-picker@9.13.2(react@18.3.1):
     dependencies:
       '@date-fns/tz': 1.4.1
       date-fns: 4.1.0
