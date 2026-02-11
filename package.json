@@ -75,10 +75,12 @@
     "zod": "latest"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "latest",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.166.0",
+    "autoprefixer": "^10.4.24",
     "dotenv": "^17.2.3",
     "eslint": "latest",
     "eslint-config-next": "latest",
