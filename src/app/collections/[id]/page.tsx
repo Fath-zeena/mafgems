@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const id = params?.id as string;
+  const { id } = params;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 

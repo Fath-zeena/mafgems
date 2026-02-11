@@ -8,17 +8,11 @@ import { createClient } from "@supabase/supabase-js";
 
 const THE_NEW_BLACK_API_BASE = "https://thenewblack.ai/api/1.1/wf";
 
-// Initialize Supabase for server-side usage (moved inside handlers to avoid build-time errors)
-const getSupabaseAdmin = () => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Missing Supabase environment variables');
-  }
-
-  return createClient(supabaseUrl, supabaseKey);
-};
+// Initialize Supabase for server-side usage
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://awnihpkyjmycjehgsnzo.supabase.co",
+  process.env.SUPABASE_SERVICE_ROLE_KEY || "" // Note: User needs to ensure this is in env
+);
 
 interface VideoGenerationRequest {
   gemName: string;
@@ -100,7 +94,7 @@ export async function POST(request: NextRequest) {
 
     // 3. Save to Supabase if userId is provided
     if (userId) {
-      const { error: dbError } = await getSupabaseAdmin().from("jewelry_videos").insert({
+      const { error: dbError } = await supabaseAdmin.from("jewelry_videos").insert({
         user_id: userId,
         gem_name: gemName,
         gem_color: gemColor,
@@ -141,7 +135,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const { data, error } = await getSupabaseAdmin()
+    const { data, error } = await supabaseAdmin
       .from("jewelry_videos")
       .select("*")
       .eq("user_id", userId)
