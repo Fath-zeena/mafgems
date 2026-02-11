@@ -7,51 +7,37 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Modern Dashboard | DyadApp",
-  description: "A high-fidelity dashboard application built with Next.js and Tailwind CSS",
+  title: "Dyad Dashboard",
+  description: "High-fidelity professional dashboard",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={cn(inter.className, "min-h-screen bg-background")}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={cn(inter.className, "min-h-screen")}>
         <Providers>
-          <div className="relative flex min-h-screen flex-col">
-            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-              <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold">
-                    D
-                  </div>
-                  <span className="text-xl font-bold tracking-tight">DyadApp</span>
+          <div className="flex flex-col min-h-screen">
+            <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
+              <div className="container flex h-16 items-center px-4 md:px-8">
+                <div className="flex items-center gap-2 font-bold text-xl">
+                  <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white">D</div>
+                  <span>DyadApp</span>
                 </div>
-                <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-                  <a href="#" className="transition-colors hover:text-primary text-foreground/80">Dashboard</a>
-                  <a href="#" className="transition-colors hover:text-primary text-foreground/80">Analytics</a>
-                  <a href="#" className="transition-colors hover:text-primary text-foreground/80">Settings</a>
-                </nav>
-                <div className="flex items-center gap-4">
-                  <button className="text-sm font-medium hover:underline underline-offset-4 text-foreground/80">Log in</button>
-                  <button className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium transition-transform active:scale-95 hover:bg-primary/90">
-                    Get Started
+                <nav className="ml-auto flex items-center gap-6">
+                  <button className="text-sm font-medium text-gray-600 hover:text-blue-600">Documentation</button>
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                    Dashboard
                   </button>
-                </div>
+                </nav>
               </div>
             </header>
-            <main className="flex-1">
+            <main id="main-content" className="flex-1">
               {children}
             </main>
-            <footer className="border-t py-6 md:py-0">
-              <div className="container mx-auto flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4">
-                <p className="text-sm text-muted-foreground">
-                  © 2024 Dyad. All rights reserved.
-                </p>
-              </div>
-            </footer>
           </div>
         </Providers>
       </body>
