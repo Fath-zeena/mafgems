@@ -8,15 +8,17 @@ import { createClient } from "@supabase/supabase-js";
 
 const THE_NEW_BLACK_API_BASE = "https://thenewblack.ai/api/1.1/wf";
 
-// Initialize Supabase for server-side usage
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// Initialize Supabase for server-side usage (moved inside handlers to avoid build-time errors)
+const getSupabaseAdmin = () => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables');
-}
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Missing Supabase environment variables');
+  }
 
-const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
+  return createClient(supabaseUrl, supabaseKey);
+};
 
 // Mapping for new jewelry design methods to database-compatible methods
 const INPUT_METHOD_DB_MAPPING: { [key: string]: string } = {
@@ -200,7 +202,7 @@ export async function POST(request: NextRequest) {
       
       if (body.userId) {
         try {
-          await supabaseAdmin.from("presentation_generations").insert({
+          await getSupabaseAdmin().from("presentation_generations").insert({
             user_id: body.userId,
             input_method: getDbInputMethod(body.inputMethod),
             jewelry_type: body.jewelryType,
@@ -363,7 +365,7 @@ export async function POST(request: NextRequest) {
         // Save to database if userId is present
         if (body.userId) {
           try {
-            await supabaseAdmin.from("presentation_generations").insert({
+            await getSupabaseAdmin().from("presentation_generations").insert({
               user_id: body.userId,
               input_method: getDbInputMethod(body.inputMethod),
               jewelry_type: body.jewelryType,
@@ -477,7 +479,7 @@ export async function POST(request: NextRequest) {
     // Save to database if userId is present
     if (body.userId) {
       try {
-        await supabaseAdmin.from("presentation_generations").insert({
+        await getSupabaseAdmin().from("presentation_generations").insert({
           user_id: body.userId,
           input_method: getDbInputMethod(body.inputMethod),
           jewelry_type: body.jewelryType,

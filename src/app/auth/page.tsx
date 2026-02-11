@@ -19,7 +19,7 @@ function AuthContent() {
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
-  const defaultTab = searchParams.get("view") === "admin" ? "admin" : "customer";
+  const defaultTab = searchParams?.get("view") === "admin" ? "admin" : "customer";
 
   useEffect(() => {
     const checkUser = async () => {

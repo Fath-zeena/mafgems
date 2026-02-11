@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Crimson_Text } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
-import Navbar from "@/components/Navbar";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
-const inter = Inter({ subsets: ["latin"] });
+const crimsonText = Crimson_Text({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-serif",
+});
 
 export const metadata: Metadata = {
-  title: "MAF Gems",
-  description: "Exquisite jewelry and gemstones",
+  title: "MAFGEMS - Exquisite Jewellery",
+  description: "Craft your own timeless piece with our jewellery customiser.",
 };
 
 export default function RootLayout({
@@ -17,13 +21,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Navbar />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Toaster />
+    <html lang="en-GB">
+      <body
+        className={`${crimsonText.variable} font-serif antialiased flex flex-col min-h-screen`}
+      >
+        <Header />
+        <main className="flex-grow">{children}</main>
+        <Footer />
       </body>
     </html>
   );

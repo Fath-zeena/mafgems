@@ -2,16 +2,22 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import axios from 'axios';
 
-// IMPORTANT: You must set these environment variables in your hosting environment (e.g., Netlify)
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const HEYGEN_API_KEY = process.env.HEYGEN_API_KEY;
-
 // Initialize OpenAI only when needed to avoid build-time errors
 const getOpenAI = () => {
-  if (!OPENAI_API_KEY) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
     throw new Error('OPENAI_API_KEY is not configured');
   }
-  return new OpenAI({ apiKey: OPENAI_API_KEY });
+  return new OpenAI({ apiKey });
+};
+
+// Get HeyGen API key when needed
+const getHeyGenKey = () => {
+  const apiKey = process.env.HEYGEN_API_KEY;
+  if (!apiKey) {
+    throw new Error('HEYGEN_API_KEY is not configured');
+  }
+  return apiKey;
 };
 
 // Placeholder for a HeyGen template ID you would create in their studio
@@ -19,13 +25,11 @@ const HEYGEN_TEMPLATE_ID = "YOUR_HEYGEN_TEMPLATE_ID";
 const HEYGEN_AVATAR_ID = "YOUR_HEYGEN_AVATAR_ID"; 
 
 export async function POST(request: Request) {
-  if (!OPENAI_API_KEY || !HEYGEN_API_KEY) {
-    return NextResponse.json({ error: "API keys are not configured." }, { status: 500 });
-  }
-
   try {
-    const { gemName, metalColor, imageUrl } = await request.json();
+    getHeyGenKey(); // Check if HeyGen key is available
     const openai = getOpenAI();
+
+    const { gemName, metalColor, imageUrl } = await request.json();
 
     // 1. AI Brain: Generate the script using OpenAI
     const prompt = `You are a luxury jewellery concierge for MAFGEMS. Write a short, elegant, 20-second script (max 50 words) to present a custom piece of jewellery. The piece is a ${gemName} set in ${metalColor} gold. Focus on the luxury and timelessness of the design.`;
@@ -54,7 +58,7 @@ export async function POST(request: Request) {
 
     const heygenResponse = await axios.post('https://api.heygen.com/v1/video.generate', heygenPayload, {
       headers: {
-        'X-Api-Key': HEYGEN_API_KEY,
+        'X-Api-Key': getHeyGenKey(),
         'Content-Type': 'application/json',
       },
     });

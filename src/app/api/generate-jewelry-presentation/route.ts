@@ -8,11 +8,17 @@ import { createClient } from "@supabase/supabase-js";
 
 const THE_NEW_BLACK_API_BASE = "https://thenewblack.ai/api/1.1/wf";
 
-// Initialize Supabase for server-side usage
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://awnihpkyjmycjehgsnzo.supabase.co",
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-);
+// Initialize Supabase for server-side usage (moved inside handlers to avoid build-time errors)
+const getSupabaseAdmin = () => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Missing Supabase environment variables');
+  }
+
+  return createClient(supabaseUrl, supabaseKey);
+};
 
 interface TryOnRequest {
   gemName: string;
@@ -61,7 +67,7 @@ export async function POST(request: NextRequest) {
       const simulatedUrl = `https://placehold.co/1024x1024/png?text=${gemName}+${jewelryType}`;
       
       if (userId) {
-        await supabaseAdmin.from("user_designs").insert({
+        await getSupabaseAdmin().from("user_designs").insert({
           user_id: userId,
           gem_name: gemName,
           gem_color: gemColor,
@@ -108,7 +114,7 @@ export async function POST(request: NextRequest) {
 
     // Save to user_designs if userId is present
     if (userId && imageUrl) {
-      await supabaseAdmin.from("user_designs").insert({
+      await getSupabaseAdmin().from("user_designs").insert({
         user_id: userId,
         gem_name: gemName,
         gem_color: gemColor,
