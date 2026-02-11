@@ -1,0 +1,7 @@
+{
+  "name": "nextjs-proxy",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "cd /app && npm run dev -- -p 3000"
+  }
+}
