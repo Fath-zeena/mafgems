@@ -1,38 +1,42 @@
-"use client";
-
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Gem, Sparkles, ShoppingBag } from "lucide-react";
+import Link from "next/link";
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <div className="relative flex flex-col items-center justify-center text-center min-h-[calc(100vh-80px)] px-4 py-10">
-      {/* Jewelry-themed hero background */}
-      <div className="absolute inset-0">
-        <img src="/gems-images/jewelry-hero-bg.svg" alt="Jewelry background pattern" className="w-full h-full object-cover" />
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-2rem)] p-4 text-center">
+      <div className="mb-8 p-4 bg-primary/10 rounded-full">
+        <Gem className="w-12 h-12 text-primary" />
       </div>
-
-      <div className="relative max-w-3xl px-6 py-10 md:py-14 bg-transparent">
-        <h1 className="text-5xl md:text-7xl font-serif font-extrabold tracking-wide text-white drop-shadow-lg">
-          The Art of Bespoke Luxury
-        </h1>
-        <p className="mt-4 text-sm md:text-lg text-white/90 leading-relaxed max-w-2xl mx-auto">
-          40 years of heritage meets the future of design. Create your unique masterpiece with our AI-powered customiser.
-        </p>
-        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-          <Link href="/customizer">
-            <Button size="lg" className="w-full sm:w-auto text-sm md:text-base px-8 py-3 uppercase tracking-wider bg-foreground text-white shadow-md hover:shadow-lg">
-              Design Your Ring
-            </Button>
-          </Link>
-          <Link href="/collections">
-            <Button
-              size="lg"
-              variant="outline"
-              className="w-full sm:w-auto text-sm md:text-base px-8 py-3 uppercase tracking-wider border-white text-white bg-white/5 hover:bg-white/10"
-            >
-              View Collections
-            </Button>
-          </Link>
+      <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
+        Welcome to <span className="text-primary">MAF Gems</span>
+      </h1>
+      <p className="text-xl text-muted-foreground max-w-2xl mb-8">
+        Discover the finest gemstones and create unique jewelry designs tailored just for you.
+      </p>
+      <div className="flex flex-wrap gap-4 justify-center">
+        <Button size="lg" className="gap-2">
+          <ShoppingBag className="w-5 h-5" />
+          Browse Collection
+        </Button>
+        <Button size="lg" variant="outline" className="gap-2">
+          <Sparkles className="w-5 h-5" />
+          Custom Design
+        </Button>
+      </div>
+      
+      <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full">
+        <div className="p-6 border rounded-xl bg-card">
+          <h3 className="text-xl font-semibold mb-2">Rare Gems</h3>
+          <p className="text-muted-foreground text-sm">Sourced from the most exotic locations around the globe.</p>
+        </div>
+        <div className="p-6 border rounded-xl bg-card">
+          <h3 className="text-xl font-semibold mb-2">Expert Craft</h3>
+          <p className="text-muted-foreground text-sm">Master jewelers bringing your vision to life with precision.</p>
+        </div>
+        <div className="p-6 border rounded-xl bg-card">
+          <h3 className="text-xl font-semibold mb-2">Secure Deals</h3>
+          <p className="text-muted-foreground text-sm">Every piece comes with a certificate of authenticity and secure shipping.</p>
         </div>
       </div>
     </div>
