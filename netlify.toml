@@ -4,11 +4,27 @@
 
 [build.environment]
   NODE_VERSION = "18"
-  NEXT_PUBLIC_SUPABASE_URL = "https://awnihpkyjmycjehgsnzo.supabase.co"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3bmlocGt5am15Y2plaGdzbnpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1NDg5NjUsImV4cCI6MjA3NjEyNDk2NX0.g6sR7yJoeOXXuJeDSflulUDwBwxbR-h_eoFVdvV37VI"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
 [functions]
   node_bundler = "esbuild"
+
+# ===========================================
+# ENVIRONMENT VARIABLES TO SET IN NETLIFY UI
+# ===========================================
+# Go to: Site Settings > Environment Variables
+#
+# REQUIRED (for basic functionality):
+# -----------------------------------
+# NEXT_PUBLIC_SUPABASE_URL = "https://awnihpkyjmycjehgsnzo.supabase.co"
+# NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3bmlocGt5am15Y2plaGdzbnpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1NDg5NjUsImV4cCI6MjA3NjEyNDk2NX0.g6sR7yJoeOXXuJeDSflulUDwBwxbR-h_eoFVdvV37VI"
+#
+# OPTIONAL (for AI features):
+# ---------------------------
+# SUPABASE_SERVICE_ROLE_KEY = "your-service-role-key"
+# THE_NEW_BLACK_API_KEY = "your-api-key"
+# OPENAI_API_KEY = "your-openai-key"
+# HEYGEN_API_KEY = "your-heygen-key"
+# NEXT_PUBLIC_ADMIN_SECRET = "MAFGEMS_ADMIN_2026"
