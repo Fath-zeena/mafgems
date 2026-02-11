@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  allowedDevOrigins: [
+    "https://*.preview.emergentagent.com",
+    "https://*.stage-preview.emergentagent.com",
+  ],
 };
 
 export default nextConfig;
