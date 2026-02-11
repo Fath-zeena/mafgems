@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, ShoppingBag, Search, User } from 'lucide-react';
+import { Menu, X, ShoppingBag, Search, User, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -12,8 +12,8 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Collections', href: '/collections' },
     { name: 'Gemstones', href: '/gemstones' },
-    { name: 'Custom Design', href: '/custom' },
-    { name: 'About', href: '/about' },
+    { name: 'AI Presentation', href: '/presentation', icon: <Sparkles className="h-3 w-3 mr-1" /> },
+    { name: 'Gem Customiser', href: '/customizer' },
   ];
 
   return (
@@ -29,8 +29,9 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium transition-colors hover:text-primary/80"
+                className="flex items-center text-sm font-medium transition-colors hover:text-primary/80"
               >
+                {link.icon && link.icon}
                 {link.name}
               </Link>
             ))}
@@ -41,8 +42,10 @@ const Navbar = () => {
           <Button variant="ghost" size="icon" className="hidden sm:flex">
             <Search className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon">
-            <User className="h-5 w-5" />
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/profile">
+              <User className="h-5 w-5" />
+            </Link>
           </Button>
           <Button variant="ghost" size="icon" className="relative">
             <ShoppingBag className="h-5 w-5" />
@@ -64,7 +67,7 @@ const Navbar = () => {
       <div
         className={cn(
           "md:hidden absolute top-16 left-0 w-full bg-background border-b transition-all duration-300 ease-in-out",
-          isOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+          isOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
         )}
       >
         <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
@@ -72,9 +75,10 @@ const Navbar = () => {
             <Link
               key={link.name}
               href={link.href}
-              className="text-lg font-medium py-2 border-b border-muted last:border-0"
+              className="flex items-center text-lg font-medium py-2 border-b border-muted last:border-0"
               onClick={() => setIsOpen(false)}
             >
+              {link.icon && link.icon}
               {link.name}
             </Link>
           ))}
