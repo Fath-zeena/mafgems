@@ -49,6 +49,7 @@
     "embla-carousel": "latest",
     "embla-carousel-react": "^8.6.0",
     "eslint-plugin-import": "latest",
+    "framer-motion": "^12.34.0",
     "immer": "11.0.1",
     "input-otp": "^1.4.2",
     "lucide-react": "latest",
@@ -73,17 +74,17 @@
     "vaul": "^1.1.2",
     "ws": "8.18.3",
     "zod": "latest"
-    },
-    "optionalDependencies": {
-      "@next/swc-darwin-arm64": "16.1.6",
-      "@next/swc-darwin-x64": "16.1.6",
-      "@next/swc-linux-arm64-gnu": "16.1.6",
-      "@next/swc-linux-arm64-musl": "16.1.6",
-      "@next/swc-linux-x64-gnu": "16.1.6",
-      "@next/swc-linux-x64-musl": "16.1.6",
-      "@next/swc-win32-arm64-msvc": "16.1.6",
-      "@next/swc-win32-x64-msvc": "16.1.6"
-    },
+  },
+  "optionalDependencies": {
+    "@next/swc-darwin-arm64": "16.1.6",
+    "@next/swc-darwin-x64": "16.1.6",
+    "@next/swc-linux-arm64-gnu": "16.1.6",
+    "@next/swc-linux-arm64-musl": "16.1.6",
+    "@next/swc-linux-x64-gnu": "16.1.6",
+    "@next/swc-linux-x64-musl": "16.1.6",
+    "@next/swc-win32-arm64-msvc": "16.1.6",
+    "@next/swc-win32-x64-msvc": "16.1.6"
+  },
   "devDependencies": {
     "@types/node": "latest",
     "@types/react": "^19.2.10",
