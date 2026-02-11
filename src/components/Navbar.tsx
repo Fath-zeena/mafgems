@@ -11,9 +11,9 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Collections', href: '/collections' },
-    { name: 'Gemstones', href: '/gemstones' },
+    { name: 'Gemstones', href: '/gems' },
     { name: 'AI Presentation', href: '/presentation', icon: <Sparkles className="h-3 w-3 mr-1" /> },
-    { name: 'Gem Customiser', href: '/customizer' },
+    { name: 'Gem Customiser', href: '/custom-design' },
   ];
 
   return (
