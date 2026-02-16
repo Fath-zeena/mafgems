@@ -12,11 +12,26 @@ export function createClient() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    if (!url || !anonKey) {
-      throw new Error('Missing Supabase environment variables');
-    }
+    const isPlaceholder =
+      !url || !anonKey || url.includes("your-project") || anonKey.includes("your-anon");
 
-    supabase = createSupabaseClient(url, anonKey);
+    if (isPlaceholder) {
+      // Return a lightweight mock client that surfaces a clear error object
+      const mockClient = {
+        from: (_table: string) => ({
+          select: async (_cols?: string) => {
+            return {
+              data: null,
+              error: { message: "Supabase not configured: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local" },
+            };
+          },
+        }),
+      } as unknown as SupabaseClient;
+
+      supabase = mockClient;
+    } else {
+      supabase = createSupabaseClient(url, anonKey);
+    }
   }
 
   return supabase;

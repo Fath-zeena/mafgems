@@ -42,7 +42,13 @@ export function GemGallery() {
         const { data, error } = await supabase.from("gems").select("*");
 
         if (error) {
-          console.error("Error fetching gems from Supabase:", error);
+          // Supabase error objects may have non-enumerable properties; stringify them for full visibility
+          try {
+            const errStr = JSON.stringify(error, Object.getOwnPropertyNames(error));
+            console.error("Error fetching gems from Supabase:", error, "(stringified):", errStr);
+          } catch (e) {
+            console.error("Error fetching gems from Supabase (could not stringify):", error);
+          }
           console.log("Using mock data as fallback");
           setGems(MOCK_GEMS);
         } else if (data && Array.isArray(data) && data.length > 0) {
